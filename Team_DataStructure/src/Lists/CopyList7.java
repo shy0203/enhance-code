@@ -2,9 +2,8 @@ package Lists;
 
 import java.util.*;
 
-
-public class CopyList7<E> extends AbstractSequentialList<E>
-		implements List<E>, Deque<E>, Cloneable, java.io.Serializable {
+public class CopyList7<E> extends AbstractSequentialList<E> implements
+		List<E>, Deque<E>, Cloneable, java.io.Serializable {
 	// 첫번째 노드를 가리키는 필드
 	public transient Node<E> head;
 	public transient Node<E> tail;
@@ -95,10 +94,10 @@ public class CopyList7<E> extends AbstractSequentialList<E>
 	}
 
 	public Node<E> node(int index) {
-		if(index < 0 || index >= size)
-			throw new IndexOutOfBoundsException("Index: "+index+
-					", Size: "+size);
-		
+		if (index < 0 || index >= size)
+			throw new IndexOutOfBoundsException("Index: " + index + ", Size: "
+					+ size);
+
 		// 노드의 인덱스가 전체 노드 수의 반보다 큰지 작은지 계산
 		if (index < size / 2) {
 			// head부터 next를 이용해서 인덱스에 해당하는 노드를 찾습니다.
@@ -116,13 +115,13 @@ public class CopyList7<E> extends AbstractSequentialList<E>
 			return x;
 		}
 	}
-	
+
 	public E get(int k) {
 		Node<E> temp = node(k);
 		return temp.data;
 	}
-	
-	/////////////////////////////////////////////////////////////////////////////////////
+
+	// ///////////////////////////////////////////////////////////////////////////////////
 
 	private transient Entry<E> header = new Entry<E>(null, null, null);
 	private transient int size = 0;
@@ -204,9 +203,9 @@ public class CopyList7<E> extends AbstractSequentialList<E>
 	 * @param e
 	 *            the element to add
 	 */
-//	public void addFirst(E e) {
-//		addBefore(e, header.next);
-//	}
+	// public void addFirst(E e) {
+	// addBefore(e, header.next);
+	// }
 
 	/**
 	 * Appends the specified element to the end of this list.
@@ -217,9 +216,9 @@ public class CopyList7<E> extends AbstractSequentialList<E>
 	 * @param e
 	 *            the element to add
 	 */
-//	public void addLast(E e) {
-//		addBefore(e, header);
-//	}
+	// public void addLast(E e) {
+	// addBefore(e, header);
+	// }
 
 	/**
 	 * Returns <tt>true</tt> if this list contains the specified element. More
@@ -255,7 +254,21 @@ public class CopyList7<E> extends AbstractSequentialList<E>
 	 * @return <tt>true</tt> (as specified by {@link Collection#add})
 	 */
 	public boolean add(E e) {
-		addBefore(e, header);
+		// addBefore(e, header);
+		// 노드를 생성합니다.
+		Node<E> newNode = new Node<E>(e);
+		// head가 가지고 있는 주소값을 newNode next에 담습니다.
+		newNode.next = head;
+		// 기존에 노드가 있었다면 현재 헤드의 이전 노드로 새로운 노드를 지정합니다.
+		if (head != null) {
+			head.prev = newNode;
+		}
+		// 헤드로 새로운 노드를 지정합니다.
+		head = newNode;
+		size++;
+		if (head.next == null) {
+			tail = head;
+		}
 		return true;
 	}
 
@@ -378,9 +391,9 @@ public class CopyList7<E> extends AbstractSequentialList<E>
 	 * @throws IndexOutOfBoundsException
 	 *             {@inheritDoc}
 	 */
-//	public E get(int index) {
-//		return entry(index).element;
-//	}
+	// public E get(int index) {
+	// return entry(index).element;
+	// }
 
 	/**
 	 * Replaces the element at the specified position in this list with the
@@ -413,9 +426,9 @@ public class CopyList7<E> extends AbstractSequentialList<E>
 	 * @throws IndexOutOfBoundsException
 	 *             {@inheritDoc}
 	 */
-//	public void add(int index, E element) {
-//		addBefore(element, (index == size ? header : entry(index)));
-//	}
+	// public void add(int index, E element) {
+	// addBefore(element, (index == size ? header : entry(index)));
+	// }
 
 	/**
 	 * Removes the element at the specified position in this list. Shifts any

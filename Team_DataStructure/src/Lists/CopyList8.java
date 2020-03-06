@@ -1,7 +1,6 @@
 package Lists;
 
 import java.util.*;
-
 public class CopyList8<E> extends AbstractSequentialList<E>
 		implements List<E>, Deque<E>, Cloneable, java.io.Serializable {
 
@@ -15,7 +14,7 @@ public class CopyList8<E> extends AbstractSequentialList<E>
 		// 다음 노드를 가리키는 필드
 		public Node<E> next;
 		public Node<E> prev;
-		
+
 		public Node(E input) {
 			this.data = input;
 			this.next = null;
@@ -306,7 +305,21 @@ public class CopyList8<E> extends AbstractSequentialList<E>
 	 * @return <tt>true</tt> (as specified by {@link Collection#add})
 	 */
 	public boolean add(E e) {
-		addBefore(e, header);
+		// addBefore(e, header);
+		// 노드를 생성합니다.
+		Node<E> newNode = new Node<E>(e);
+		// 새로운 노드의 next 값은 헤드가 지정한 값을 저장하여 다음 노드 값을 가리킨다.
+		newNode.next = head;
+		// 헤드에 새로운 노드값을 저장하여 새로운 노드를 가리킨다.
+		head = newNode;
+		size++;
+		// tail의 값을 지정하는 구문; 첫 노드 생성 시 head.next값이 없기 때문에 null 판단으로 head의 값을
+		// tail에도 준다.
+		// toString()으로 값 비교시 head와 tail의 값은 같게 나온다.
+		if (head.next == null) {
+			tail = head;
+		}
+		tail.next = head;
 		return true;
 	}
 

@@ -1,19 +1,20 @@
 import java.util.LinkedList;
 
-import Experiment.Experiment;
+import Data.Data_Experiment;
 import Lists.*;
 
-
 public class Remote_Control {
-
+	
 	public void Experiment_select(int a) {
+		// 실험번호별 분류 (해당 List에 대한 add(), get() 등의 동작들을 묶어 번호별로 분류)
 		
-		Experiment e = new Experiment();
+		Data_Experiment e = new Data_Experiment();
 		
 		switch (a) {
 		case 0:
 			e.Analysis_add(new LinkedList<Integer>(), "LinkedList");
 			e.Analysis_get(new LinkedList<Integer>(), "LinkedList");
+			e.Analysis_SequentialGet(new LinkedList_sg<Integer>(), "LinkedList");
 			
 			break;
 		
@@ -44,6 +45,30 @@ public class Remote_Control {
 		case 5:
 			e.Analysis_add(new CopyList5<Integer>(), "CopyList5");
 			e.Analysis_get(new CopyList5<Integer>(), "CopyList5");
+			
+			break;
+			
+		case 6:
+			e.Analysis_add(new CopyList6<Integer>(), "CopyList6");
+			e.Analysis_get(new CopyList6<Integer>(), "CopyList6");
+			
+			break;
+		
+		case 7:
+			e.Analysis_add(new CopyList7<Integer>(), "CopyList7");
+			e.Analysis_get(new CopyList7<Integer>(), "CopyList7");
+			
+			break;
+			
+		case 8:
+			e.Analysis_add(new CopyList8<Integer>(), "CopyList8");
+			e.Analysis_get(new CopyList8<Integer>(), "CopyList8");
+			
+			break;
+		
+		case 9:
+			e.Analysis_add(new CopyList9<Integer>(), "CopyList9");
+			e.Analysis_get(new CopyList9<Integer>(), "CopyList9");
 			
 			break;
 

@@ -23,10 +23,10 @@ public class CopyList6<E> extends AbstractSequentialList<E>
 			this.prev = null;
 		}
 
-		// 노드의 내용을 쉽게 출력해서 확인해볼 수 있는 기능
-		public String toString() {
-			return String.valueOf(this.data);
-		}
+		// // 노드의 내용을 쉽게 출력해서 확인해볼 수 있는 기능
+		// public String toString() {
+		// return String.valueOf(this.data);
+		// }
 	}
 
 	@Override
@@ -98,10 +98,10 @@ public class CopyList6<E> extends AbstractSequentialList<E>
 	}
 
 	public Node<E> node(int index) {
-		if(index < 0 || index >= size)
-			throw new IndexOutOfBoundsException("Index: "+index+
-					", Size: "+size);
-		
+		if (index < 0 || index >= size)
+			throw new IndexOutOfBoundsException("Index: " + index + ", Size: "
+					+ size);
+
 		// 노드의 인덱스가 전체 노드 수의 반보다 큰지 작은지 계산
 		if (index < size / 2) {
 			// head부터 next를 이용해서 인덱스에 해당하는 노드를 찾습니다.
@@ -119,13 +119,13 @@ public class CopyList6<E> extends AbstractSequentialList<E>
 			return x;
 		}
 	}
-	
+
 	public E get(int k) {
 		Node<E> temp = node(k);
 		return temp.data;
 	}
-	
-	/////////////////////////////////////////////////////////////////////////////////////
+
+	// ///////////////////////////////////////////////////////////////////////////////////
 
 	private transient Entry<E> header = new Entry<E>(null, null, null);
 	private transient int size = 0;
@@ -207,9 +207,9 @@ public class CopyList6<E> extends AbstractSequentialList<E>
 	 * @param e
 	 *            the element to add
 	 */
-//	public void addFirst(E e) {
-//		addBefore(e, header.next);
-//	}
+	// public void addFirst(E e) {
+	// addBefore(e, header.next);
+	// }
 
 	/**
 	 * Appends the specified element to the end of this list.
@@ -220,9 +220,9 @@ public class CopyList6<E> extends AbstractSequentialList<E>
 	 * @param e
 	 *            the element to add
 	 */
-//	public void addLast(E e) {
-//		addBefore(e, header);
-//	}
+	// public void addLast(E e) {
+	// addBefore(e, header);
+	// }
 
 	/**
 	 * Returns <tt>true</tt> if this list contains the specified element. More
@@ -258,7 +258,25 @@ public class CopyList6<E> extends AbstractSequentialList<E>
 	 * @return <tt>true</tt> (as specified by {@link Collection#add})
 	 */
 	public boolean add(E e) {
-		addBefore(e, header);
+		// addBefore(e, header);
+		// 노드를 생성합니다.
+		Node<E> newNode = new Node<E>(e);
+		// 리스트의 노드가 없다면 첫번째 노드를 추가하는 메소드를 사용하빈다.
+		if (size == 0) {
+			addFirst(e);
+		} else {
+			// tail의 다음 노드로 생성한 노드를 지정합니다.
+			tail.next = newNode;
+			// 새로운 노드의 이전 노드로 tail을 지정합니다.
+			newNode.prev = tail;
+			// 마지막 노드를 갱신합니다.
+			tail = newNode;
+			tail.next = head;
+			head.prev = tail;
+			// 엘리먼트의 개수를 1 증가 시킵니다.
+			size++;
+
+		}
 		return true;
 	}
 
@@ -381,9 +399,9 @@ public class CopyList6<E> extends AbstractSequentialList<E>
 	 * @throws IndexOutOfBoundsException
 	 *             {@inheritDoc}
 	 */
-//	public E get(int index) {
-//		return entry(index).element;
-//	}
+	// public E get(int index) {
+	// return entry(index).element;
+	// }
 
 	/**
 	 * Replaces the element at the specified position in this list with the
@@ -416,9 +434,9 @@ public class CopyList6<E> extends AbstractSequentialList<E>
 	 * @throws IndexOutOfBoundsException
 	 *             {@inheritDoc}
 	 */
-//	public void add(int index, E element) {
-//		addBefore(element, (index == size ? header : entry(index)));
-//	}
+	// public void add(int index, E element) {
+	// addBefore(element, (index == size ? header : entry(index)));
+	// }
 
 	/**
 	 * Removes the element at the specified position in this list. Shifts any
