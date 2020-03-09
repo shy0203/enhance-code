@@ -15,7 +15,7 @@ public class CopyList4<E>
     // elementListCapacity : 한 elementList의 최대 공간
     private ArrayList<E> elementList = new ArrayList<E>();
     private int elementListSize = 0;
-    private int elementListCapacity = 1000;
+    private int elementListCapacity = 10;
 
     
     public CopyList4() {
