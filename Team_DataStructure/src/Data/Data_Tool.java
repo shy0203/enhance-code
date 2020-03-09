@@ -10,7 +10,7 @@ public abstract class Data_Tool {
 	protected long start;	// ns단위의 처음 측정 시간
 	protected long end;		// ns단위의 마지막 측정 시간
 	
-	public void Produce(List list) {
+	public static void Produce(List<Integer> list) {
 		// get()에 필요한 데이터가 들어있는 list 생성
 		
 		for(int i=0; i<size; i++){

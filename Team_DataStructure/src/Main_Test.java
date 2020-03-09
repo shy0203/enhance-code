@@ -8,19 +8,20 @@ public class Main_Test {
 	public static void main(String[] args) {	
 		// 최종 실행문 결과출력!!
 		
-		Scanner scan = new Scanner(System.in);
-		System.out.print("실험번호 입력 : ");		
-		a = scan.nextInt();
+		@SuppressWarnings("resource")
+		Scanner research_num = new Scanner(System.in);
+		System.out.print("실험번호 입력 : ");	
+		a = research_num.nextInt();
+		
 		System.out.println("--------------------------------------------------------------------");
 		List_Manual(a);
 		System.out.println("--------------------------------------------------------------------");
 		
-		Remote_Control rc = new Remote_Control();
-		rc.Experiment_select(a);
+		Remote_Control.Experiment_select(a);
 	}
 	
 	public static void List_Manual(int a){
-		// 실험 번호별 설명 메모 및 출력
+		// 실험 번호별 설명문
 		
 		switch (a) {
 		case 0:

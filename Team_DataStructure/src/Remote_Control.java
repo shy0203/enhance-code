@@ -5,7 +5,7 @@ import Lists.*;
 
 public class Remote_Control {
 	
-	public void Experiment_select(int a) {
+	public static void Experiment_select(int a) {
 		// 실험번호별 분류 (해당 List에 대한 add(), get() 등의 동작들을 묶어 번호별로 분류)
 		
 		Data_Experiment e = new Data_Experiment();
