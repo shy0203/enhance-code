@@ -2,8 +2,10 @@ package Lists;
 
 import java.util.*;
 
-public class CopyList7<E> extends AbstractSequentialList<E> implements
-		List<E>, Deque<E>, Cloneable, java.io.Serializable {
+import Lists.CopyList10.Node;
+
+public class CopyList7<E> extends AbstractSequentialList<E>
+		implements List<E>, Deque<E>, Cloneable, java.io.Serializable {
 	// 첫번째 노드를 가리키는 필드
 	public transient Node<E> head;
 	public transient Node<E> tail;
@@ -21,10 +23,10 @@ public class CopyList7<E> extends AbstractSequentialList<E> implements
 			this.prev = null;
 		}
 
-		// 노드의 내용을 쉽게 출력해서 확인해볼 수 있는 기능
-		public String toString() {
-			return String.valueOf(this.data);
-		}
+		// // 노드의 내용을 쉽게 출력해서 확인해볼 수 있는 기능
+		// public String toString() {
+		// return String.valueOf(this.data);
+		// }
 	}
 
 	@Override
@@ -43,6 +45,8 @@ public class CopyList7<E> extends AbstractSequentialList<E> implements
 		if (head.next == null) {
 			tail = head;
 		}
+		tail.next = head;
+		head.prev = tail;
 	}
 
 	public void addLast(E input) {
@@ -87,7 +91,7 @@ public class CopyList7<E> extends AbstractSequentialList<E> implements
 			newNode.prev = temp1;
 			size++;
 			// 새로운 노드의 다음 노드가 없다면 새로운 노드가 마지막 노드이기 때문에 tail로 지정합니다.
-			if (newNode.next == null) {
+			if (newNode.next == head) {
 				tail = newNode;
 			}
 		}
@@ -257,17 +261,21 @@ public class CopyList7<E> extends AbstractSequentialList<E> implements
 		// addBefore(e, header);
 		// 노드를 생성합니다.
 		Node<E> newNode = new Node<E>(e);
-		// head가 가지고 있는 주소값을 newNode next에 담습니다.
-		newNode.next = head;
-		// 기존에 노드가 있었다면 현재 헤드의 이전 노드로 새로운 노드를 지정합니다.
-		if (head != null) {
-			head.prev = newNode;
-		}
-		// 헤드로 새로운 노드를 지정합니다.
-		head = newNode;
-		size++;
-		if (head.next == null) {
-			tail = head;
+		// 리스트의 노드가 없다면 첫번째 노드를 추가하는 메소드를 사용하빈다.
+		if (size == 0) {
+			addFirst(e);
+		} else {
+			// tail의 다음 노드로 생성한 노드를 지정합니다.
+			tail.next = newNode;
+			// 새로운 노드의 이전 노드로 tail을 지정합니다.
+			newNode.prev = tail;
+			// 마지막 노드를 갱신합니다.
+			tail = newNode;
+			tail.next = head;
+			head.prev = tail;
+			// 엘리먼트의 개수를 1 증가 시킵니다.
+			size++;
+
 		}
 		return true;
 	}

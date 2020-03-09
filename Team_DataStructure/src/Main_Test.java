@@ -20,6 +20,7 @@ public class Main_Test {
 		Remote_Control.Experiment_select(a);
 	}
 	
+
 	public static void List_Manual(int a){
 		// 실험 번호별 설명문
 		
@@ -49,23 +50,23 @@ public class Main_Test {
 			break;
 			
 		case 6:
-			System.out.println("CopyList6<Integer> (DoublyCircularLinkedList)");
+			System.out.println("CopyList6<Integer> (특정 기준을 자동으로 잡고 탐색하는 구조)");
 			break;
-		
+			
 		case 7:
-			System.out.println("CopyList7<Integer> (DoublyLinkedList)");
-			break;
-			
-		case 8:
-			System.out.println("CopyList8<Integer> (SinglyCircularLinkedList)");
+			System.out.println("CopyList7<Integer> (DoublyCircularLinkedList)");
 			break;
 		
-		case 9:
-			System.out.println("CopyList9<Integer> (SinglyLinkedList)");
+		case 8:
+			System.out.println("CopyList8<Integer> (DoublyLinkedList)");
 			break;
 			
+		case 9:
+			System.out.println("CopyList9<Integer> (SinglyCircularLinkedList)");
+			break;
+		
 		case 10:
-			System.out.println("CopyList10<Integer> (특정 기준을 자동으로 잡고 탐색하는 구조)");
+			System.out.println("CopyList10<Integer> (SinglyLinkedList)");
 			break;
 
 		default:

@@ -1,17 +1,8 @@
 package Lists;
 
-import java.util.AbstractSequentialList;
-import java.util.Collection;
-import java.util.ConcurrentModificationException;
-import java.util.Deque;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.NoSuchElementException;
-import java.util.Queue;
-
-public class CopyList9<E> extends AbstractSequentialList<E> implements
-		List<E>, Deque<E>, Cloneable, java.io.Serializable {
+import java.util.*;
+public class CopyList9<E> extends AbstractSequentialList<E>
+		implements List<E>, Deque<E>, Cloneable, java.io.Serializable {
 
 	// 첫번째 노드를 가리키는 필드
 	public Node<E> head;
@@ -51,6 +42,7 @@ public class CopyList9<E> extends AbstractSequentialList<E> implements
 		if (head.next == null) {
 			tail = head;
 		}
+		tail.next = head;
 	}
 
 	@Override
@@ -65,6 +57,8 @@ public class CopyList9<E> extends AbstractSequentialList<E> implements
 			tail.next = newNode;
 			// 마지막 노드를 갱신합니다.
 			tail = newNode;
+			// 순환 : 마지막 노드를 첫 노드로 잡는다
+			tail.next = head;
 			// 노드 개수 증가
 			size++;
 		}
@@ -99,6 +93,7 @@ public class CopyList9<E> extends AbstractSequentialList<E> implements
 				tail = newNode;
 				// 순환 : 마지막 노드를 첫 노드로 잡는다
 			}
+			tail.next = head;
 		}
 	}
 
@@ -158,7 +153,8 @@ public class CopyList9<E> extends AbstractSequentialList<E> implements
 
 	@Override
 	public E get(int k) {
-		return node(k).data;
+		Node<E> temp = node(k);
+		return temp.data;
 	}
 
 	@Override
@@ -176,19 +172,6 @@ public class CopyList9<E> extends AbstractSequentialList<E> implements
 				return -1;
 		}
 		return index;
-	}
-
-	public void printR(List<E> list, int size) {
-		for (int i = 0; i < size; i++) {
-			System.out.println("/// index : " + i);
-			if (list instanceof CopyList6
-					|| list instanceof CopyList7) {
-				System.out.println("prev: " + node(i).prev);
-			}
-			System.out.println("value: " + get(i));
-			System.out.println("next: " + node(i).next);
-			System.out.println("-----------");
-		}
 	}
 
 	private transient Entry<E> header = new Entry<E>(null, null, null);
@@ -322,22 +305,23 @@ public class CopyList9<E> extends AbstractSequentialList<E> implements
 	 * @return <tt>true</tt> (as specified by {@link Collection#add})
 	 */
 	public boolean add(E e) {
-//		addBefore(e, header);
-	    	// 노드를 생성합니다.
-			Node<E> newNode = new Node<E>(e);
-			// 새로운 노드의 next 값은 헤드가 지정한 값을 저장하여 다음 노드 값을 가리킨다.
-			newNode.next = head;
-			// 헤드에 새로운 노드값을 저장하여 새로운 노드를 가리킨다.
-			head = newNode;
-			size++;
-			// tail의 값을 지정하는 구문; 첫 노드 생성 시 head.next값이 없기 때문에 null 판단으로 head의 값을
-			// tail에도 준다.
-			// toString()으로 값 비교시 head와 tail의 값은 같게 나온다.
-			if (head.next == null) {
-				tail = head;
-			}
-	        return true;
-	    }
+		// addBefore(e, header);
+		// 노드를 생성합니다.
+		Node<E> newNode = new Node<E>(e);
+		// 새로운 노드의 next 값은 헤드가 지정한 값을 저장하여 다음 노드 값을 가리킨다.
+		newNode.next = head;
+		// 헤드에 새로운 노드값을 저장하여 새로운 노드를 가리킨다.
+		head = newNode;
+		size++;
+		// tail의 값을 지정하는 구문; 첫 노드 생성 시 head.next값이 없기 때문에 null 판단으로 head의 값을
+		// tail에도 준다.
+		// toString()으로 값 비교시 head와 tail의 값은 같게 나온다.
+		if (head.next == null) {
+			tail = head;
+		}
+		tail.next = head;
+		return true;
+	}
 
 	/**
 	 * Removes the first occurrence of the specified element from this list, if
