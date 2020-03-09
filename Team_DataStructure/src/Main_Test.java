@@ -45,7 +45,7 @@ public class Main_Test {
 			break;
 
 		case 5:
-			System.out.println("CopyList5<Integer> (특정 기준을 잡고 탐색하는 구조)");
+			System.out.println("CopyList5<Integer> (특정 기준을 고정으로 잡고 탐색하는 구조)");
 			break;
 			
 		case 6:
@@ -62,6 +62,10 @@ public class Main_Test {
 		
 		case 9:
 			System.out.println("CopyList9<Integer> (SinglyLinkedList)");
+			break;
+			
+		case 10:
+			System.out.println("CopyList10<Integer> (특정 기준을 자동으로 잡고 탐색하는 구조)");
 			break;
 
 		default:

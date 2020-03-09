@@ -71,6 +71,12 @@ public class Remote_Control {
 			e.Analysis_get(new CopyList9<Integer>(), "CopyList9");
 			
 			break;
+			
+		case 10:
+			e.Analysis_add(new CopyList10<Integer>(), "CopyList10");
+			e.Analysis_get(new CopyList10<Integer>(), "CopyList10");
+			
+			break;
 
 		default:
 			break;
