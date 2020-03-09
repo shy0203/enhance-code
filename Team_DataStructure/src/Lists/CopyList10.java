@@ -2,7 +2,7 @@ package Lists;
 
 import java.util.*;
 
-public class CopyList5<E> 
+public class CopyList10<E> 
 	extends AbstractSequentialList<E> 
 	implements List<E>, Deque<E>, Cloneable, java.io.Serializable {
 	
@@ -10,6 +10,9 @@ public class CopyList5<E>
 	private transient int size = 0;
 	private ArrayList<StdEntry> stdList = new ArrayList<StdEntry>();
 	private int std;
+	
+	// 리스트의 제한성을 통일 시키기 위해 static
+	private static int limit = -1;
 
 	// Change-DH
 	class StdEntry<E> {
@@ -27,17 +30,24 @@ public class CopyList5<E>
 		}
 	}
 
-	public CopyList5() {
+	public CopyList10() {
 		header.next = header.previous = header;
-		std = 1024;
+		std = 8;
+		
+		if(limit == -1) {
+			Scanner scan = new Scanner(System.in);
+			
+			System.out.println("0. 제한 X\n1. 제한");
+			limit = scan.nextInt();			
+		}
 	}
 
-	public CopyList5(int std) {
+	public CopyList10(int std) {
 		header.next = header.previous = header;
 		this.std = std;
 	}
 
-	public CopyList5(Collection<? extends E> c) {
+	public CopyList10(Collection<? extends E> c) {
 		this();
 		addAll(c);
 	}
@@ -194,22 +204,6 @@ public class CopyList5<E>
 		
 		return e;
 	}
-
-	//
-	// private Entry<E> entry(int index) {
-	// if (index < 0 || index >= size)
-	// throw new IndexOutOfBoundsException("Index: " + index + ", Size: "
-	// + size);
-	// Entry<E> e = header;
-	// if (index < (size >> 1)) {
-	// for (int i = 0; i <= index; i++)
-	// e = e.next;
-	// } else {
-	// for (int i = size; i > index; i--)
-	// e = e.previous;
-	// }
-	// return e;
-	// }
 
 	public int indexOf(Object o) {
 		int index = 0;
@@ -402,7 +396,7 @@ public class CopyList5<E>
 			checkForComodification();
 			Entry<E> lastNext = lastReturned.next;
 			try {
-				CopyList5.this.remove(lastReturned);
+				CopyList10.this.remove(lastReturned);
 			} catch (NoSuchElementException e) {
 				throw new IllegalStateException();
 			}
@@ -457,6 +451,17 @@ public class CopyList5<E>
 			stdList.add(new StdEntry<E>(size, newEntry));
 		}
 		size++;
+		
+		// 제한이 없는 버전
+		if(limit == 0) {
+			if(size >= std * 16)
+				std *= 16;
+		}
+		// 제한 있는 버전
+		else if(limit == 1)
+			if(size >= std * 16 && std < 1000)
+				std *= 16;
+		
 		modCount++;
 		return newEntry;
 	}
@@ -496,9 +501,9 @@ public class CopyList5<E>
 	}
 
 	public Object clone() {
-		CopyList5<E> clone = null;
+		CopyList10<E> clone = null;
 		try {
-			clone = (CopyList5<E>) super.clone();
+			clone = (CopyList10<E>) super.clone();
 		} catch (CloneNotSupportedException e) {
 			throw new InternalError();
 		}
