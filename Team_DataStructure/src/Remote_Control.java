@@ -1,9 +1,22 @@
 import java.util.LinkedList;
 
 import Data.Data_Experiment;
-import Lists.*;
+import Lists.CopyList;
+import Lists.CopyList10;
+import Lists.CopyList2;
+import Lists.CopyList3;
+import Lists.CopyList4;
+import Lists.CopyList5;
+import Lists.CopyList6;
+import Lists.CopyList7;
+import Lists.CopyList8;
+import Lists.CopyList9;
+import Lists.LinkedList_sg;
+import Lists.SearchClass;
 
 public class Remote_Control {
+	
+
 	
 	public static void Experiment_select(int a) {
 		// 실험번호별 분류 (해당 List에 대한 add(), get() 등의 동작들을 묶어 번호별로 분류)
@@ -82,5 +95,7 @@ public class Remote_Control {
 			break;
 		}
 	}
+
+	
 
 }

@@ -1,36 +1,45 @@
 import java.io.IOException;
-import java.util.Scanner;
+
+import Lists.CopyList;
 
 public class Main_Test {
 
 	static int a;
 
-	
 	public static void main(String[] args) throws ClassNotFoundException,
 			IOException {
-		SearchPackage sp = new SearchPackage();
-		Class[] test = sp.getClasses("Lists");
-
-		for (int i = 0; i < test.length; i++)
-		{			
-			System.out.println(test[i]);
-		}
 		
-
-		// 최종 실행문 결과출력!!
-
-		 @SuppressWarnings("resource")
-		 Scanner research_num = new Scanner(System.in);
-		 System.out.print("실험번호 입력 : ");
-		 a = research_num.nextInt();
 		
-		 System.out
-		 .println("--------------------------------------------------------------------");
-		 List_Manual(a);
-		 System.out
-		 .println("--------------------------------------------------------------------");
+		SearchClass lll = new SearchClass();
 		
-		 Remote_Control.Experiment_select(a);
+		lll.getClassList("Lists");
+		
+		
+//		SearchPackage sp = new SearchPackage();
+//		System.out.println(sp.getClasses("Lists"));
+//		Class[] test = sp.getClasses("Lists");
+//		System.out.println();
+//		for (int i = 0; i < test.length; i++)
+//		{			
+//			System.out.println(test[i]);
+//		}
+//		
+//		
+//		// 최종 실행문 결과출력!!
+//
+//		 @SuppressWarnings("resource")
+//		 Scanner research_num = new Scanner(System.in);
+//		 System.out.print("실험번호 입력 : ");
+//		 a = research_num.nextInt();
+//		
+//		 System.out
+//		 .println("--------------------------------------------------------------------");
+//		 List_Manual(a);
+//		 System.out
+//		 .println("--------------------------------------------------------------------");
+//		
+//		 Remote_Control.Experiment_select(a);
+		 
 	}
 
 	public static void List_Manual(int a) {
