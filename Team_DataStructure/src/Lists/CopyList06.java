@@ -2,7 +2,7 @@ package Lists;
 
 import java.util.*;
 
-public class CopyList6<E> 
+public class CopyList06<E> 
 	extends AbstractSequentialList<E> 
 	implements List<E>, Deque<E>, Cloneable, java.io.Serializable {
 	
@@ -30,7 +30,7 @@ public class CopyList6<E>
 		}
 	}
 
-	public CopyList6() {
+	public CopyList06() {
 		header.next = header.previous = header;
 		std = 8;
 		
@@ -42,12 +42,12 @@ public class CopyList6<E>
 		}
 	}
 
-	public CopyList6(int std) {
+	public CopyList06(int std) {
 		header.next = header.previous = header;
 		this.std = std;
 	}
 
-	public CopyList6(Collection<? extends E> c) {
+	public CopyList06(Collection<? extends E> c) {
 		this();
 		addAll(c);
 	}
@@ -396,7 +396,7 @@ public class CopyList6<E>
 			checkForComodification();
 			Entry<E> lastNext = lastReturned.next;
 			try {
-				CopyList6.this.remove(lastReturned);
+				CopyList06.this.remove(lastReturned);
 			} catch (NoSuchElementException e) {
 				throw new IllegalStateException();
 			}
@@ -501,9 +501,9 @@ public class CopyList6<E>
 	}
 
 	public Object clone() {
-		CopyList6<E> clone = null;
+		CopyList06<E> clone = null;
 		try {
-			clone = (CopyList6<E>) super.clone();
+			clone = (CopyList06<E>) super.clone();
 		} catch (CloneNotSupportedException e) {
 			throw new InternalError();
 		}

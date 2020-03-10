@@ -1,75 +1,87 @@
 package Lists;
 
-import java.util.*;
+import java.util.AbstractSequentialList;
+import java.util.Collection;
+import java.util.ConcurrentModificationException;
+import java.util.Deque;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.NoSuchElementException;
+import java.util.Queue;
 
-import Lists.CopyList10.Node;
-
-public class CopyList7<E> extends AbstractSequentialList<E>
+public class CopyList09<E> extends AbstractSequentialList<E>
 		implements List<E>, Deque<E>, Cloneable, java.io.Serializable {
-	// 첫번째 노드를 가리키는 필드
-	public transient Node<E> head;
-	public transient Node<E> tail;
 
-	public class Node<E> {
+	// 첫번째 노드를 가리키는 필드
+	public Node<E> head;
+	public Node<E> tail;
+
+	public static class Node<E> {
 		// 데이터가 저장될 필드
 		public E data;
 		// 다음 노드를 가리키는 필드
 		public Node<E> next;
 		public Node<E> prev;
 
-		Node(E element) {
-			this.data = element;
+		public Node(E input) {
+			this.data = input;
 			this.next = null;
 			this.prev = null;
 		}
 
-		// // 노드의 내용을 쉽게 출력해서 확인해볼 수 있는 기능
-		// public String toString() {
-		// return String.valueOf(this.data);
-		// }
+		// 노드의 내용을 쉽게 출력해서 확인해볼 수 있는 기능
+		public String toString() {
+			return String.valueOf(this.data);
+		}
 	}
 
 	@Override
 	public void addFirst(E input) {
 		// 노드를 생성합니다.
 		Node<E> newNode = new Node<E>(input);
-		// head가 가지고 있는 주소값을 newNode next에 담습니다.
+		// 새로운 노드의 next 값은 헤드가 지정한 값을 저장하여 다음 노드 값을 가리킨다.
 		newNode.next = head;
-		// 기존에 노드가 있었다면 현재 헤드의 이전 노드로 새로운 노드를 지정합니다.
-		if (head != null) {
-			head.prev = newNode;
-		}
-		// 헤드로 새로운 노드를 지정합니다.
+		// 헤드에 새로운 노드값을 저장하여 새로운 노드를 가리킨다.
 		head = newNode;
 		size++;
+		// tail의 값을 지정하는 구문; 첫 노드 생성 시 head.next값이 없기 때문에 null 판단으로 head의 값을
+		// tail에도 준다.
+		// toString()으로 값 비교시 head와 tail의 값은 같게 나온다.
 		if (head.next == null) {
 			tail = head;
 		}
 		tail.next = head;
-		head.prev = tail;
 	}
 
+	@Override
 	public void addLast(E input) {
 		// 노드를 생성합니다.
 		Node<E> newNode = new Node<E>(input);
-		// 리스트의 노드가 없다면 첫번째 노드를 추가하는 메소드를 사용하빈다.
+		// 리스트의 노드가 없다면 첫번째 노드를 추가하는 메소드를 사용합니다.
 		if (size == 0) {
 			addFirst(input);
 		} else {
-			// tail의 다음 노드로 생성한 노드를 지정합니다.
+			// 마지막 노드의 다음 노드로 생성한 노드를 지정합니다.
 			tail.next = newNode;
-			// 새로운 노드의 이전 노드로 tail을 지정합니다.
-			newNode.prev = tail;
 			// 마지막 노드를 갱신합니다.
 			tail = newNode;
+			// 순환 : 마지막 노드를 첫 노드로 잡는다
 			tail.next = head;
-			head.prev = tail;
-			// 엘리먼트의 개수를 1 증가 시킵니다.
+			// 노드 개수 증가
 			size++;
-
 		}
 	}
 
+	public Node<E> node(int index) {
+		Node<E> x = head;
+		for (int i = 0; i < index; i++) {
+			x = x.next;
+		}
+		return x;
+	}
+
+	@Override
 	public void add(int k, E input) {
 		// 만약 k가 0이라면 첫번째 노드에 추가하는 것이기 때문에 addFirst를 사용합니다.
 		if (k == 0) {
@@ -80,52 +92,96 @@ public class CopyList7<E> extends AbstractSequentialList<E>
 			Node<E> temp2 = temp1.next;
 			// 새로운 노드를 생성합니다.
 			Node<E> newNode = new Node<E>(input);
-			// temp1의 다음 노드로 새로운 노드를 지정하빈다.
+			// temp1의 다음 노드로 새로운 노드를 지정합니다.
 			temp1.next = newNode;
-			// 새로운 노드의 다음 노드로 temp2를 지정하빈다.
+			// 새로운 노드의 다음 노드로 temp2를 지정합니다.
 			newNode.next = temp2;
-			// temp2의 이전 노드로 새로운 노드를 지정합니다.
-			if (temp2 != null)
-				temp2.prev = newNode;
-			// 새로운 노드의 이전 노드로 temp1을 지정합니다.
-			newNode.prev = temp1;
 			size++;
 			// 새로운 노드의 다음 노드가 없다면 새로운 노드가 마지막 노드이기 때문에 tail로 지정합니다.
 			if (newNode.next == head) {
 				tail = newNode;
+				// 순환 : 마지막 노드를 첫 노드로 잡는다
 			}
+			tail.next = head;
 		}
 	}
 
-	public Node<E> node(int index) {
-		if (index < 0 || index >= size)
-			throw new IndexOutOfBoundsException("Index: " + index + ", Size: "
-					+ size);
-
-		// 노드의 인덱스가 전체 노드 수의 반보다 큰지 작은지 계산
-		if (index < size / 2) {
-			// head부터 next를 이용해서 인덱스에 해당하는 노드를 찾습니다.
-			Node<E> x = head;
-			for (int i = 0; i < index; i++) {
-				x = x.next;
-			}
-			return x;
-		} else {
-			// tail부터 prev를 이용해서 인덱스에 해당하는 노드를 찾습니다.
-			Node<E> x = tail;
-			for (int j = size - 1; j > index; j--) {
-				x = x.prev;
-			}
-			return x;
+	@Override
+	public String toString() {
+		// 노드가 없다면 []를 리턴합니다.
+		if (head == null) {
+			return "[]";
 		}
+		// 탐색을 시작합니다.
+		Node<E> temp = head;
+		String str = "[";
+		// 다음 노드가 없을 때까지 반복문을 실행합니다.
+		// 마지막 노드는 다음 노드가 없기 때문에 아래의 구문 마지막 노드는 제외됩니다.
+		while (temp.next != null) {
+			str += temp.data + ",";
+			temp = temp.next;
+		}
+		// 마지막 노드를 출력결과에 포함시킵니다.
+		str += temp.data;
+		return str + "]";
 	}
 
+	@Override
+	public E removeFirst() {
+		// 첫번째 노드를 temp로 지정하고 head의 값을 두번째 노드로 변경합니다.
+		Node<E> temp = head;
+		head = temp.next;
+		// 데이터를 삭제하기 전에 리턴할 값을 임시 변수에 담습니다.
+		E returnData = temp.data;
+		temp = null;
+		size--;
+		return returnData;
+	}
+
+	@Override
+	public E remove(int k) {
+		if (k == 0)
+			return removeFirst();
+		// k-1 번째 노드를 temp의 값으로 지정합니다.
+		Node<E> temp = node(k - 1);
+		// 삭제 노드를 todoDeleted에 기록해 둡니다.
+		// 삭제 노드를 지금 제거하면 삭제 앞 노드와 삭제 뒤 노드를 연결할 수 없습니다.
+		Node<E> todoDeleted = temp.next;
+		// 삭제 앞 노드의 다음 노드로 삭제 뒤 노드를지정합니다.
+		temp.next = temp.next.next;
+		// 삭제된 데이터를 리턴하기 위해서 returnData에 데이터를 저장합니다.
+		E returnData = todoDeleted.data;
+		if (todoDeleted == tail) {
+			tail = temp;
+		}
+		// cur.next를 삭제 합니다.
+		todoDeleted = null;
+		size--;
+		return returnData;
+	}
+
+	@Override
 	public E get(int k) {
 		Node<E> temp = node(k);
 		return temp.data;
 	}
 
-	// ///////////////////////////////////////////////////////////////////////////////////
+	@Override
+	public int indexOf(Object data) {
+		// 탐색 대상이 되는 노드를 temp로 지정합니다.
+		Node<E> temp = head;
+		// 탐색 대상이 몇번째 엘리먼트에 있느지를 의마하는 변수로 index를 사용합니다.
+		int index = 0;
+		// 탐색 값과 탐색 대상의 값을 비교합니다.
+		while (temp.data != data) {
+			temp = temp.next;
+			index++;
+			// temp의 값이 null이라는 것은 더 이상 탐색 대상이 없다는 것을 의미합니다. 이 때 -1을 리턴합니다.
+			if (temp == null)
+				return -1;
+		}
+		return index;
+	}
 
 	private transient Entry<E> header = new Entry<E>(null, null, null);
 	private transient int size = 0;
@@ -133,7 +189,7 @@ public class CopyList7<E> extends AbstractSequentialList<E>
 	/**
 	 * Constructs an empty list.
 	 */
-	public CopyList7() {
+	public CopyList09() {
 		header.next = header.previous = header;
 	}
 
@@ -146,7 +202,7 @@ public class CopyList7<E> extends AbstractSequentialList<E>
 	 * @throws NullPointerException
 	 *             if the specified collection is null
 	 */
-	public CopyList7(Collection<? extends E> c) {
+	public CopyList09(Collection<? extends E> c) {
 		this();
 		addAll(c);
 	}
@@ -186,9 +242,9 @@ public class CopyList7<E> extends AbstractSequentialList<E>
 	 * @throws NoSuchElementException
 	 *             if this list is empty
 	 */
-	public E removeFirst() {
-		return remove(header.next);
-	}
+	// public E removeFirst() {
+	// return remove(header.next);
+	// }
 
 	/**
 	 * Removes and returns the last element from this list.
@@ -197,9 +253,9 @@ public class CopyList7<E> extends AbstractSequentialList<E>
 	 * @throws NoSuchElementException
 	 *             if this list is empty
 	 */
-	public E removeLast() {
-		return remove(header.previous);
-	}
+	// public E removeLast() {
+	// return remove(header.previous);
+	// }
 
 	/**
 	 * Inserts the specified element at the beginning of this list.
@@ -261,22 +317,18 @@ public class CopyList7<E> extends AbstractSequentialList<E>
 		// addBefore(e, header);
 		// 노드를 생성합니다.
 		Node<E> newNode = new Node<E>(e);
-		// 리스트의 노드가 없다면 첫번째 노드를 추가하는 메소드를 사용하빈다.
-		if (size == 0) {
-			addFirst(e);
-		} else {
-			// tail의 다음 노드로 생성한 노드를 지정합니다.
-			tail.next = newNode;
-			// 새로운 노드의 이전 노드로 tail을 지정합니다.
-			newNode.prev = tail;
-			// 마지막 노드를 갱신합니다.
-			tail = newNode;
-			tail.next = head;
-			head.prev = tail;
-			// 엘리먼트의 개수를 1 증가 시킵니다.
-			size++;
-
+		// 새로운 노드의 next 값은 헤드가 지정한 값을 저장하여 다음 노드 값을 가리킨다.
+		newNode.next = head;
+		// 헤드에 새로운 노드값을 저장하여 새로운 노드를 가리킨다.
+		head = newNode;
+		size++;
+		// tail의 값을 지정하는 구문; 첫 노드 생성 시 head.next값이 없기 때문에 null 판단으로 head의 값을
+		// tail에도 준다.
+		// toString()으로 값 비교시 head와 tail의 값은 같게 나온다.
+		if (head.next == null) {
+			tail = head;
 		}
+		tail.next = head;
 		return true;
 	}
 
@@ -435,7 +487,7 @@ public class CopyList7<E> extends AbstractSequentialList<E>
 	 *             {@inheritDoc}
 	 */
 	// public void add(int index, E element) {
-	// addBefore(element, (index == size ? header : entry(index)));
+	// addBefore(element, (index==size ? header : entry(index)));
 	// }
 
 	/**
@@ -449,9 +501,9 @@ public class CopyList7<E> extends AbstractSequentialList<E>
 	 * @throws IndexOutOfBoundsException
 	 *             {@inheritDoc}
 	 */
-	public E remove(int index) {
-		return remove(entry(index));
-	}
+	// public E remove(int index) {
+	// return remove(entry(index));
+	// }
 
 	/**
 	 * Returns the indexed entry.
@@ -485,23 +537,23 @@ public class CopyList7<E> extends AbstractSequentialList<E>
 	 * @return the index of the first occurrence of the specified element in
 	 *         this list, or -1 if this list does not contain the element
 	 */
-	public int indexOf(Object o) {
-		int index = 0;
-		if (o == null) {
-			for (Entry e = header.next; e != header; e = e.next) {
-				if (e.element == null)
-					return index;
-				index++;
-			}
-		} else {
-			for (Entry e = header.next; e != header; e = e.next) {
-				if (o.equals(e.element))
-					return index;
-				index++;
-			}
-		}
-		return -1;
-	}
+	// public int indexOf(Object o) {
+	// int index = 0;
+	// if (o==null) {
+	// for (Entry e = header.next; e != header; e = e.next) {
+	// if (e.element==null)
+	// return index;
+	// index++;
+	// }
+	// } else {
+	// for (Entry e = header.next; e != header; e = e.next) {
+	// if (o.equals(e.element))
+	// return index;
+	// index++;
+	// }
+	// }
+	// return -1;
+	// }
 
 	/**
 	 * Returns the index of the last occurrence of the specified element in this
@@ -842,7 +894,7 @@ public class CopyList7<E> extends AbstractSequentialList<E>
 			checkForComodification();
 			Entry<E> lastNext = lastReturned.next;
 			try {
-				CopyList7.this.remove(lastReturned);
+				CopyList09.this.remove(lastReturned);
 			} catch (NoSuchElementException e) {
 				throw new IllegalStateException();
 			}
@@ -941,9 +993,9 @@ public class CopyList7<E> extends AbstractSequentialList<E>
 	 * @return a shallow copy of this <tt>LinkedList</tt> instance
 	 */
 	public Object clone() {
-		CopyList7<E> clone = null;
+		CopyList09<E> clone = null;
 		try {
-			clone = (CopyList7<E>) super.clone();
+			clone = (CopyList09<E>) super.clone();
 		} catch (CloneNotSupportedException e) {
 			throw new InternalError();
 		}
@@ -1084,5 +1136,11 @@ public class CopyList7<E> extends AbstractSequentialList<E>
 		// Read in all elements in the proper order.
 		for (int i = 0; i < size; i++)
 			addBefore((E) s.readObject(), header);
+	}
+
+	@Override
+	public E removeLast() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
