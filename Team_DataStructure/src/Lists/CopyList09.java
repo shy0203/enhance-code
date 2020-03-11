@@ -1,7 +1,7 @@
 package Lists;
 
 import java.util.*;
-public class CopyList9<E> extends AbstractSequentialList<E>
+public class CopyList09<E> extends AbstractSequentialList<E>
 		implements List<E>, Deque<E>, Cloneable, java.io.Serializable {
 
 	// 첫번째 노드를 가리키는 필드
@@ -180,7 +180,7 @@ public class CopyList9<E> extends AbstractSequentialList<E>
 	/**
 	 * Constructs an empty list.
 	 */
-	public CopyList9() {
+	public CopyList09() {
 		header.next = header.previous = header;
 	}
 
@@ -193,7 +193,7 @@ public class CopyList9<E> extends AbstractSequentialList<E>
 	 * @throws NullPointerException
 	 *             if the specified collection is null
 	 */
-	public CopyList9(Collection<? extends E> c) {
+	public CopyList09(Collection<? extends E> c) {
 		this();
 		addAll(c);
 	}
@@ -885,7 +885,7 @@ public class CopyList9<E> extends AbstractSequentialList<E>
 			checkForComodification();
 			Entry<E> lastNext = lastReturned.next;
 			try {
-				CopyList9.this.remove(lastReturned);
+				CopyList09.this.remove(lastReturned);
 			} catch (NoSuchElementException e) {
 				throw new IllegalStateException();
 			}
@@ -984,9 +984,9 @@ public class CopyList9<E> extends AbstractSequentialList<E>
 	 * @return a shallow copy of this <tt>LinkedList</tt> instance
 	 */
 	public Object clone() {
-		CopyList9<E> clone = null;
+		CopyList09<E> clone = null;
 		try {
-			clone = (CopyList9<E>) super.clone();
+			clone = (CopyList09<E>) super.clone();
 		} catch (CloneNotSupportedException e) {
 			throw new InternalError();
 		}

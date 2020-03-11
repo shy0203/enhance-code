@@ -2,7 +2,7 @@ package Data;
 
 import java.util.List;
 
-import Lists.LinkedList_sg;
+import Lists.CopyList00;
 
 public abstract class Data_Measure extends Data_Tool {
 	// add(), get(), 기타 동작에 대한 세부적인 부분 (시간측정 및 올바른 결과 출력, 동작 수정 및 추가 가능)
@@ -36,7 +36,7 @@ public abstract class Data_Measure extends Data_Tool {
 		start = System.nanoTime();
 		
 		for(int i=0; i<size; i++){
-			((LinkedList_sg<Integer>) list).SequentialGet();
+			((CopyList00<Integer>) list).SequentialGet();
 		}
 		
 		end = System.nanoTime();

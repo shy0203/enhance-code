@@ -2,67 +2,65 @@ package Lists;
 
 import java.util.*;
 
-public class CopyList2<E>
+public class CopyList00<E>
     extends AbstractSequentialList<E>
     implements List<E>, Deque<E>, Cloneable, java.io.Serializable
 {
     private transient Entry<E> header = new Entry<E>(null, null, null);
     private transient int size = 0;
-    // Change!!
-    private Object[] elementData;
 
-    public CopyList2() {
+    public CopyList00() {
         header.next = header.previous = header;
-     // Change!!
-        elementData = new Object[10];
     }
 
-    public CopyList2(Collection<? extends E> c) {
-		this();
-		addAll(c);
+    public CopyList00(Collection<? extends E> c) {
+	this();
+	addAll(c);
     }
 
     public E getFirst() {
-		if (size==0)
-		    throw new NoSuchElementException();
+	if (size==0)
+	    throw new NoSuchElementException();
 
-		return header.next.element;
+	return header.next.element;
     }
 
     public E getLast()  {
-		if (size==0)
-		    throw new NoSuchElementException();
-	
-		return header.previous.element;
+	if (size==0)
+	    throw new NoSuchElementException();
+
+	return header.previous.element;
     }
 
+
     public E removeFirst() {
-    	return remove(header.next);
+	return remove(header.next);
     }
 
     public E removeLast() {
-    	return remove(header.previous);
+	return remove(header.previous);
     }
 
     public void addFirst(E e) {
-    	addBefore(e, header.next);
+	addBefore(e, header.next);
     }
-  
+
     public void addLast(E e) {
-    	addBefore(e, header);
+	addBefore(e, header);
     }
-  
+
     public boolean contains(Object o) {
         return indexOf(o) != -1;
     }
 
     public int size() {
-    	return size;
+	return size;
     }
 
+
     public boolean add(E e) {
-		addBefore(e, header);
-	        return true;
+	addBefore(e, header);
+        return true;
     }
 
     public boolean remove(Object o) {
@@ -96,24 +94,21 @@ public class CopyList2<E>
         int numNew = a.length;
         if (numNew==0)
             return false;
-        modCount++;
+	modCount++;
 
         Entry<E> successor = (index==size ? header : entry(index));
         Entry<E> predecessor = successor.previous;
-		for (int i=0; i<numNew; i++) {
-	            Entry<E> e = new Entry<E>((E)a[i], successor, predecessor);
-	            predecessor.next = e;
-	            predecessor = e;
-	        }
+	for (int i=0; i<numNew; i++) {
+            Entry<E> e = new Entry<E>((E)a[i], successor, predecessor);
+            predecessor.next = e;
+            predecessor = e;
+        }
         successor.previous = predecessor;
 
         size += numNew;
         return true;
     }
 
-    /**
-     * Removes all of the elements from this list.
-     */
     public void clear() {
         Entry<E> e = header.next;
         while (e != header) {
@@ -127,12 +122,8 @@ public class CopyList2<E>
 	modCount++;
     }
 
-    // Change!!
     public E get(int index) {
-    	RangeCheck(index);
-
-    	return (E) elementData[index];
-        //return entry(index).element;
+        return entry(index).element;
     }
 
     public E set(int index, E element) {
@@ -150,9 +141,6 @@ public class CopyList2<E>
         return remove(entry(index));
     }
 
-    /**
-     * Returns the indexed entry.
-     */
     private Entry<E> entry(int index) {
         if (index < 0 || index >= size)
             throw new IndexOutOfBoundsException("Index: "+index+
@@ -209,10 +197,112 @@ public class CopyList2<E>
             return null;
         return getFirst();
     }
+    
+    
+    // Change-DH
+    public E SequentialGet() {
+    	if(size == 0)
+    		return null;
+ 
+    	Entry<E> temp = header.next;
+    	
+    	HeaderToTail(temp);
+    	
+    	return temp.element;
+    }
+    
+ // Change-DH 너무 느림
+//    public E SequentialGet(int index) {
+//    	if(size == 0)
+//    		return null;
+//    	
+//    	Entry<E> temp = null;
+//    	if(index == 0)
+//    		return header.next.element;
+//    	for(int i = 0; i < index; i++) 
+//        	HeaderToTail(temp);
+//        
+//    	E e = header.next.element;
+//    	
+//    	for(int i = 0; i < index; i++)
+//    		TailToHeader(temp);
+//    	return e;
+//    	
+//    }
+    
+    // Change-DH 더 느림 (반복문에 사용 불가)
+    public E SequentialGet(int index) {
+    	if(size == 0)
+    		return null;
+    	
+    	CopyList00<E> tempList = (CopyList00<E>) this.clone();
+    	
+    	if(index == 0)
+    		return tempList.header.next.element;
+    	Entry<E> temp = null;
+    	for(int i = 0; i < index; i++) {
+    		temp = tempList.header.next;
+    		tempList.header.next = temp.next;
+    		temp.next.previous = tempList.header;
+        	
+    		temp.next = tempList.header;
+        	tempList.header.previous.next = temp;
+        	temp.previous = tempList.header.previous;
+        	tempList.header.previous = temp;
+    	}
+    	
+    	return tempList.header.next.element;
+    	
+    }
+    
+// // Change-DH 더 느림
+//    public E SequentialGet(int index) {
+//    	if(size == 0)
+//    		return null;
+//    	
+//    	if(index == 0)
+//    		return header.next.element;
+//    	
+//    	Entry<E> temp = header.next;
+//    	
+//    	for(int i = 0; i < index; i++) {
+//    		HeaderToTail(temp);
+//    	}
+//        	
+//    	
+//    	return temp.element;
+//    	
+//    }
+//    
+    // Change-DH
+    public void HeaderToTail(Entry<E> temp) {
+    	temp = header.next;
+    	header.next = temp.next;
+    	temp.next.previous = header;
+    	
+    	temp.next = header;
+    	header.previous.next = temp;
+    	temp.previous = header.previous;
+    	header.previous = temp;
+    }
+    
+    // Change-DH
+    public void TailToHeader(Entry<E> temp) {
+    	temp = header.previous;
+		header.previous = temp.previous;
+		temp.previous.next = header;
 
+		temp.next = header.next;
+		header.next = temp;
+		temp.next.previous = temp;
+		temp.previous = header;
+    }
+    
+    
     public E element() {
         return getFirst();
     }
+
 
     public E poll() {
         if (size==0)
@@ -256,6 +346,7 @@ public class CopyList2<E>
         return removeFirst();
     }
 
+
     public E pollLast() {
         if (size==0)
             return null;
@@ -265,7 +356,7 @@ public class CopyList2<E>
     public void push(E e) {
         addFirst(e);
     }
-    
+
     public E pop() {
         return removeFirst();
     }
@@ -360,7 +451,7 @@ public class CopyList2<E>
             checkForComodification();
             Entry<E> lastNext = lastReturned.next;
             try {
-                CopyList2.this.remove(lastReturned);
+                CopyList00.this.remove(lastReturned);
             } catch (NoSuchElementException e) {
                 throw new IllegalStateException();
             }
@@ -404,18 +495,15 @@ public class CopyList2<E>
 	    this.previous = previous;
 	}
     }
-
     
-    // Change!!
+
     private Entry<E> addBefore(E e, Entry<E> entry) {
-		Entry<E> newEntry = new Entry<E>(e, entry, entry.previous);
-		newEntry.previous.next = newEntry;
-		newEntry.next.previous = newEntry;
-		
-		ensureCapacity(size + 1);  // Increments modCount!!
-		elementData[size++] = e;
-		modCount++;
-		return newEntry;
+	Entry<E> newEntry = new Entry<E>(e, entry, entry.previous);
+	newEntry.previous.next = newEntry;
+	newEntry.next.previous = newEntry;
+	size++;
+	modCount++;
+	return newEntry;
     }
 
     private E remove(Entry<E> e) {
@@ -435,7 +523,6 @@ public class CopyList2<E>
     public Iterator<E> descendingIterator() {
         return new DescendingIterator();
     }
-
     private class DescendingIterator implements Iterator {
         final ListItr itr = new ListItr(size());
 	public boolean hasNext() {
@@ -450,9 +537,9 @@ public class CopyList2<E>
     }
 
     public Object clone() {
-        CopyList2<E> clone = null;
+        CopyList00<E> clone = null;
 	try {
-	    clone = (CopyList2<E>) super.clone();
+	    clone = (CopyList00<E>) super.clone();
 	} catch (CloneNotSupportedException e) {
 	    throw new InternalError();
 	}
@@ -478,10 +565,10 @@ public class CopyList2<E>
 	return result;
     }
 
-
     public <T> T[] toArray(T[] a) {
         if (a.length < size)
-            a = (T[])java.lang.reflect.Array.newInstance(a.getClass().getComponentType(), size);
+            a = (T[])java.lang.reflect.Array.newInstance(
+                                a.getClass().getComponentType(), size);
         int i = 0;
 	Object[] result = a;
         for (Entry<E> e = header.next; e != header; e = e.next)
@@ -508,7 +595,6 @@ public class CopyList2<E>
             s.writeObject(e.element);
     }
 
-
     private void readObject(java.io.ObjectInputStream s)
         throws java.io.IOException, ClassNotFoundException {
 	// Read in any hidden serialization magic
@@ -524,25 +610,5 @@ public class CopyList2<E>
 	// Read in all elements in the proper order.
 	for (int i=0; i<size; i++)
             addBefore((E)s.readObject(), header);
-    }
-    
-    // Change!! arraylist()
-    public void ensureCapacity(int minCapacity) {
-    	modCount++;
-    	int oldCapacity = elementData.length;
-    	if (minCapacity > oldCapacity) {
-    	    Object oldData[] = elementData;
-    	    int newCapacity = (oldCapacity * 3)/2 + 1;
-        	    if (newCapacity < minCapacity)
-    		newCapacity = minCapacity;
-                // minCapacity is usually close to size, so this is a win:
-                elementData = Arrays.copyOf(elementData, newCapacity);
-    	}
-    }
-    
-    private void RangeCheck(int index) {
-    	if (index >= size)
-    	    throw new IndexOutOfBoundsException(
-    		"Index: "+index+", Size: "+size);
     }
 }

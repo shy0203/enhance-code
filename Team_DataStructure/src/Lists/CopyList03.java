@@ -1,33 +1,31 @@
 package Lists;
-
 import java.util.*;
 
 
-public class CopyList4<E>
+public class CopyList03<E>
     extends AbstractSequentialList<E>
     implements List<E>, Deque<E>, Cloneable, java.io.Serializable
 {
     private transient Entry<E> header = new Entry<E>(null, null, null);
     private transient int size = 0;
 
-    // elementList : Entry 객체에 저장할 element
+    // added
     // elementListSize : elementList에 적재된 공간
     // elementListCapacity : 한 elementList의 최대 공간
     private ArrayList<E> elementList = new ArrayList<E>();
     private int elementListSize = 0;
     private int elementListCapacity = 10;
 
-    
-    public CopyList4() {
+    public CopyList03() {
         header.next = header.previous = header;
     }
     
-    public CopyList4(int elementListCapacity) {
+    public CopyList03(int elementListCapacity) {
         header.next = header.previous = header;
         this.elementListCapacity = elementListCapacity;
     }
 
-    public CopyList4(Collection<? extends E> c) {
+    public CopyList03(Collection<? extends E> c) {
 		this();
 		addAll(c);
     }
@@ -56,33 +54,17 @@ public class CopyList4<E>
     	return remove(header.previous);
     }
 
-    //header.next.element에 남는 공간이 있으면 맨앞에 넣고, 뒤로 한칸씩 밀기
-	//header.next.element에 남는 공간이 없으면 맨앞에 새로운 arrayList 넣기
     public void addFirst(E e) {
-    	ArrayList<E> firstElement = header.next.element;
-    	
-    	if(firstElement != null && firstElement.size() < elementListCapacity) {
-    		firstElement.add(0,e);
-    	}else {
-    		ArrayList<E> element = new ArrayList<E>();
-        	element.add(e);
-    		addBefore(element, header.next);
-    	}
+    	//Change sy
+    	elementList.add(e);
+    	addBefore(elementList, header.next);
     }
 
   
-    //header.previous에 남는 공간이 있으면 맨뒤에 넣기
-	//header.previous에 남는 공간이 없으면 맨뒤에 새로운 arrayList 넣기
     public void addLast(E e) {
-    	ArrayList<E> lastElement = header.previous.element;
-
-    	if(lastElement != null && lastElement.size() < elementListCapacity) {
-    		lastElement.add(e);
-    	}else {
-    		ArrayList<E> elementList = new ArrayList<E>();
-        	elementList.add(e);
-    		addBefore(elementList, header);
-    	}
+    	//Change sy
+    	elementList.add(e);
+    	addBefore(elementList, header);
     }
 
     
@@ -100,14 +82,9 @@ public class CopyList4<E>
      * elementListSize가 elementListCapacity의 배수일 때마다 새로운 노드 생성
      */
     public boolean add(E e) {
-    	if(elementListSize % elementListCapacity == 0) {
-    		// node Change!
-    		ArrayList<E> elementList = new ArrayList<E>();
-    		addBefore(elementList, header);
-    	}
-    	elementListSize++;
-    	// 새로 생성한 노드의 element에 e 저장
-    	header.previous.element.add(e);
+    	//Change sy
+    	elementList.add(e);
+    	addBefore(elementList, header);
 	    return true;
     }
 
@@ -154,10 +131,11 @@ public class CopyList4<E>
     }
 
 
+    // Change!!
     // index / elementListCapacity번째에 있는 entry의 element에서
     // index % elementListCapacity번째의 데이터를 가져옴
     public E get(int index) {
-          return entry(index / elementListCapacity).element.get(index % elementListCapacity);
+        return entry(index / elementListCapacity).element.get(index % elementListCapacity);
     }
 
     
@@ -179,11 +157,13 @@ public class CopyList4<E>
     }
 
     /**
-     * change
+     * index로 객체를 찾고, 해당 객체의 element size가 elementListCapcity보다 크면
+     * 새로운 노드를 연결하고, 그렇지 않으면 계산된 index에 값을 넣는다.
      */
     public void add(int index, E element) {
-    	Entry<E> e = entry(index / elementListCapacity);
-		e.element.add(index % elementListCapacity, element);
+    	//Change sy
+    	elementList.add(element);
+    	addBefore(elementList, (index==size ? header : entry(index / elementListCapacity)));
     }
 
     /**
@@ -207,7 +187,7 @@ public class CopyList4<E>
             throw new IndexOutOfBoundsException("Index: "+index+
                                                 ", Size: "+size);
         Entry<E> e = header;
-        if (index <= (size >> 1)) {
+        if (index < (size >> 1)) {
             for (int i = 0; i <= index; i++)
                 e = e.next;
         } else {
@@ -551,7 +531,7 @@ public class CopyList4<E>
             checkForComodification();
             Entry<E> lastNext = lastReturned.next;
             try {
-                CopyList4.this.remove(lastReturned);
+                CopyList03.this.remove(lastReturned);
             } catch (NoSuchElementException e) {
                 throw new IllegalStateException();
             }
@@ -573,14 +553,10 @@ public class CopyList4<E>
 	public void add(E e) {
 	    checkForComodification();
 	    lastReturned = header;
-	    
-	    if(elementListSize < elementListCapacity) {
-    		elementList.add(e);
-    		elementListSize++;
-    	} else {
-    		addBefore(elementList, next);
-    		elementListSize = 0;
-    	}
+	    //Change sy
+    	elementList.add(e);
+    	addBefore(elementList, next);
+    	
 	    nextIndex++;
 	    expectedModCount++;
 	}
@@ -593,22 +569,26 @@ public class CopyList4<E>
 
     // element를 ArrayList로 구현
     private static class Entry<E> {
-    	ArrayList<E> element;
-    	Entry<E> next;
-    	Entry<E> previous;
+	ArrayList<E> element;
+	Entry<E> next;
+	Entry<E> previous;
 
-    	Entry(ArrayList<E> element, Entry<E> next, Entry<E> previous) {
-    		this.element = element;
-    		this.next = next;
-    		this.previous = previous;
-		}
+	Entry(ArrayList<E> element, Entry<E> next, Entry<E> previous) {
+	    this.element = element;
+	    this.next = next;
+	    this.previous = previous;
+	}
     }
 
     private Entry<E> addBefore(ArrayList<E> e, Entry<E> entry) {
 		Entry<E> newEntry = new Entry<E>(e, entry, entry.previous);
 		newEntry.previous.next = newEntry;
 		newEntry.next.previous = newEntry;
-		
+		//Change sy
+		elementListSize++;
+		if(elementListSize >= elementListCapacity){
+			elementListCapacity++;
+		}
 		size++;
 		modCount++;
 		return newEntry;

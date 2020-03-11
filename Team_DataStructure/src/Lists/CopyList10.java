@@ -181,8 +181,8 @@ public class CopyList10<E> extends AbstractSequentialList<E> implements
 	public void printR(List<E> list, int size) {
 		for (int i = 0; i < size; i++) {
 			System.out.println("/// index : " + i);
-			if (list instanceof CopyList7
-					|| list instanceof CopyList8) {
+			if (list instanceof CopyList07
+					|| list instanceof CopyList08) {
 				System.out.println("prev: " + node(i).prev);
 			}
 			System.out.println("value: " + get(i));

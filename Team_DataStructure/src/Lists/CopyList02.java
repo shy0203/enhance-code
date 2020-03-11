@@ -1,49 +1,39 @@
 package Lists;
+
 import java.util.*;
 
-
-public class CopyList3<E>
+public class CopyList02<E>
     extends AbstractSequentialList<E>
     implements List<E>, Deque<E>, Cloneable, java.io.Serializable
 {
     private transient Entry<E> header = new Entry<E>(null, null, null);
     private transient int size = 0;
+    // Change!!
+    private Object[] elementData;
 
-    // added
-    // elementListSize : elementList에 적재된 공간
-    // elementListCapacity : 한 elementList의 최대 공간
-    private ArrayList<E> elementList = new ArrayList<E>();
-    private int elementListSize = 0;
-    private int elementListCapacity = 10;
-
-    public CopyList3() {
+    public CopyList02() {
         header.next = header.previous = header;
-    }
-    
-    public CopyList3(int elementListCapacity) {
-        header.next = header.previous = header;
-        this.elementListCapacity = elementListCapacity;
+     // Change!!
+        elementData = new Object[10];
     }
 
-    public CopyList3(Collection<? extends E> c) {
+    public CopyList02(Collection<? extends E> c) {
 		this();
 		addAll(c);
     }
 
-    // 첫번째 객체에서 elementList의 첫번째 리턴 리턴
     public E getFirst() {
 		if (size==0)
 		    throw new NoSuchElementException();
 
-		return header.next.element.get(0);
+		return header.next.element;
     }
 
-    // 마지막 객체에서 elementList의 마지막 값 리턴
     public E getLast()  {
 		if (size==0)
 		    throw new NoSuchElementException();
 	
-		return header.previous.element.get(9);
+		return header.previous.element;
     }
 
     public E removeFirst() {
@@ -55,41 +45,26 @@ public class CopyList3<E>
     }
 
     public void addFirst(E e) {
-    	//Change sy
-    	elementList.add(e);
-    	addBefore(elementList, header.next);
+    	addBefore(e, header.next);
     }
-
   
     public void addLast(E e) {
-    	//Change sy
-    	elementList.add(e);
-    	addBefore(elementList, header);
+    	addBefore(e, header);
     }
-
-    
+  
     public boolean contains(Object o) {
         return indexOf(o) != -1;
     }
 
-  
     public int size() {
     	return size;
     }
 
-
-    /**
-     * elementListSize가 elementListCapacity의 배수일 때마다 새로운 노드 생성
-     */
     public boolean add(E e) {
-    	//Change sy
-    	elementList.add(e);
-    	addBefore(elementList, header);
-	    return true;
+		addBefore(e, header);
+	        return true;
     }
 
-    
-    
     public boolean remove(Object o) {
         if (o==null) {
             for (Entry<E> e = header.next; e != header; e = e.next) {
@@ -109,9 +84,31 @@ public class CopyList3<E>
         return false;
     }
 
-    
     public boolean addAll(Collection<? extends E> c) {
         return addAll(size, c);
+    }
+
+    public boolean addAll(int index, Collection<? extends E> c) {
+        if (index < 0 || index > size)
+            throw new IndexOutOfBoundsException("Index: "+index+
+                                                ", Size: "+size);
+        Object[] a = c.toArray();
+        int numNew = a.length;
+        if (numNew==0)
+            return false;
+        modCount++;
+
+        Entry<E> successor = (index==size ? header : entry(index));
+        Entry<E> predecessor = successor.previous;
+		for (int i=0; i<numNew; i++) {
+	            Entry<E> e = new Entry<E>((E)a[i], successor, predecessor);
+	            predecessor.next = e;
+	            predecessor = e;
+	        }
+        successor.previous = predecessor;
+
+        size += numNew;
+        return true;
     }
 
     /**
@@ -127,54 +124,28 @@ public class CopyList3<E>
         }
         header.next = header.previous = header;
         size = 0;
-        modCount++;
+	modCount++;
     }
-
 
     // Change!!
-    // index / elementListCapacity번째에 있는 entry의 element에서
-    // index % elementListCapacity번째의 데이터를 가져옴
     public E get(int index) {
-        return entry(index / elementListCapacity).element.get(index % elementListCapacity);
+    	RangeCheck(index);
+
+    	return (E) elementData[index];
+        //return entry(index).element;
     }
 
-    
-    
-    /**
-     * Replaces the element at the specified position in this list with the
-     * specified element.
-     *
-     * @param index index of the element to replace
-     * @param element element to be stored at the specified position
-     * @return the element previously at the specified position
-     * @throws IndexOutOfBoundsException {@inheritDoc}
-     */
     public E set(int index, E element) {
-        Entry<E> e = entry(index / elementListCapacity);
-        E oldVal = e.element.get(index % elementListCapacity);
-        e.element.set(index % elementListCapacity, element);
+        Entry<E> e = entry(index);
+        E oldVal = e.element;
+        e.element = element;
         return oldVal;
     }
 
-    /**
-     * index로 객체를 찾고, 해당 객체의 element size가 elementListCapcity보다 크면
-     * 새로운 노드를 연결하고, 그렇지 않으면 계산된 index에 값을 넣는다.
-     */
     public void add(int index, E element) {
-    	//Change sy
-    	elementList.add(element);
-    	addBefore(elementList, (index==size ? header : entry(index / elementListCapacity)));
+        addBefore(element, (index==size ? header : entry(index)));
     }
 
-    /**
-     * Removes the element at the specified position in this list.  Shifts any
-     * subsequent elements to the left (subtracts one from their indices).
-     * Returns the element that was removed from the list.
-     *
-     * @param index the index of the element to be removed
-     * @return the element previously at the specified position
-     * @throws IndexOutOfBoundsException {@inheritDoc}
-     */
     public E remove(int index) {
         return remove(entry(index));
     }
@@ -197,20 +168,6 @@ public class CopyList3<E>
         return e;
     }
 
-
-    // Search Operations
-
-    /**
-     * Returns the index of the first occurrence of the specified element
-     * in this list, or -1 if this list does not contain the element.
-     * More formally, returns the lowest index <tt>i</tt> such that
-     * <tt>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</tt>,
-     * or -1 if there is no such index.
-     *
-     * @param o element to search for
-     * @return the index of the first occurrence of the specified element in
-     *         this list, or -1 if this list does not contain the element
-     */
     public int indexOf(Object o) {
         int index = 0;
         if (o==null) {
@@ -229,17 +186,6 @@ public class CopyList3<E>
         return -1;
     }
 
-    /**
-     * Returns the index of the last occurrence of the specified element
-     * in this list, or -1 if this list does not contain the element.
-     * More formally, returns the highest index <tt>i</tt> such that
-     * <tt>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</tt>,
-     * or -1 if there is no such index.
-     *
-     * @param o element to search for
-     * @return the index of the last occurrence of the specified element in
-     *         this list, or -1 if this list does not contain the element
-     */
     public int lastIndexOf(Object o) {
         int index = size;
         if (o==null) {
@@ -258,193 +204,76 @@ public class CopyList3<E>
         return -1;
     }
 
-    // Queue operations.
-
-    /**
-     * Retrieves, but does not remove, the head (first element) of this list.
-     * @return the head of this list, or <tt>null</tt> if this list is empty
-     * @since 1.5
-     */
     public E peek() {
         if (size==0)
             return null;
         return getFirst();
     }
 
-    /**
-     * Retrieves, but does not remove, the head (first element) of this list.
-     * @return the head of this list
-     * @throws NoSuchElementException if this list is empty
-     * @since 1.5
-     */
     public E element() {
         return getFirst();
     }
 
-    /**
-     * Retrieves and removes the head (first element) of this list
-     * @return the head of this list, or <tt>null</tt> if this list is empty
-     * @since 1.5
-     */
     public E poll() {
         if (size==0)
             return null;
         return removeFirst();
     }
 
-    /**
-     * Retrieves and removes the head (first element) of this list.
-     *
-     * @return the head of this list
-     * @throws NoSuchElementException if this list is empty
-     * @since 1.5
-     */
     public E remove() {
         return removeFirst();
     }
 
-    /**
-     * Adds the specified element as the tail (last element) of this list.
-     *
-     * @param e the element to add
-     * @return <tt>true</tt> (as specified by {@link Queue#offer})
-     * @since 1.5
-     */
     public boolean offer(E e) {
         return add(e);
     }
 
-    // Deque operations
-    /**
-     * Inserts the specified element at the front of this list.
-     *
-     * @param e the element to insert
-     * @return <tt>true</tt> (as specified by {@link Deque#offerFirst})
-     * @since 1.6
-     */
     public boolean offerFirst(E e) {
         addFirst(e);
         return true;
     }
 
-    /**
-     * Inserts the specified element at the end of this list.
-     *
-     * @param e the element to insert
-     * @return <tt>true</tt> (as specified by {@link Deque#offerLast})
-     * @since 1.6
-     */
     public boolean offerLast(E e) {
         addLast(e);
         return true;
     }
 
-    /**
-     * Retrieves, but does not remove, the first element of this list,
-     * or returns <tt>null</tt> if this list is empty.
-     *
-     * @return the first element of this list, or <tt>null</tt>
-     *         if this list is empty
-     * @since 1.6
-     */
     public E peekFirst() {
         if (size==0)
             return null;
         return getFirst();
     }
 
-    /**
-     * Retrieves, but does not remove, the last element of this list,
-     * or returns <tt>null</tt> if this list is empty.
-     *
-     * @return the last element of this list, or <tt>null</tt>
-     *         if this list is empty
-     * @since 1.6
-     */
     public E peekLast() {
         if (size==0)
             return null;
         return getLast();
     }
 
-    /**
-     * Retrieves and removes the first element of this list,
-     * or returns <tt>null</tt> if this list is empty.
-     *
-     * @return the first element of this list, or <tt>null</tt> if
-     *     this list is empty
-     * @since 1.6
-     */
     public E pollFirst() {
         if (size==0)
             return null;
         return removeFirst();
     }
 
-    /**
-     * Retrieves and removes the last element of this list,
-     * or returns <tt>null</tt> if this list is empty.
-     *
-     * @return the last element of this list, or <tt>null</tt> if
-     *     this list is empty
-     * @since 1.6
-     */
     public E pollLast() {
         if (size==0)
             return null;
         return removeLast();
     }
 
-    /**
-     * Pushes an element onto the stack represented by this list.  In other
-     * words, inserts the element at the front of this list.
-     *
-     * <p>This method is equivalent to {@link #addFirst}.
-     *
-     * @param e the element to push
-     * @since 1.6
-     */
     public void push(E e) {
         addFirst(e);
     }
-
-    /**
-     * Pops an element from the stack represented by this list.  In other
-     * words, removes and returns the first element of this list.
-     *
-     * <p>This method is equivalent to {@link #removeFirst()}.
-     *
-     * @return the element at the front of this list (which is the top
-     *         of the stack represented by this list)
-     * @throws NoSuchElementException if this list is empty
-     * @since 1.6
-     */
+    
     public E pop() {
         return removeFirst();
     }
 
-    /**
-     * Removes the first occurrence of the specified element in this
-     * list (when traversing the list from head to tail).  If the list
-     * does not contain the element, it is unchanged.
-     *
-     * @param o element to be removed from this list, if present
-     * @return <tt>true</tt> if the list contained the specified element
-     * @since 1.6
-     */
     public boolean removeFirstOccurrence(Object o) {
         return remove(o);
     }
 
-    /**
-     * Removes the last occurrence of the specified element in this
-     * list (when traversing the list from head to tail).  If the list
-     * does not contain the element, it is unchanged.
-     *
-     * @param o element to be removed from this list, if present
-     * @return <tt>true</tt> if the list contained the specified element
-     * @since 1.6
-     */
     public boolean removeLastOccurrence(Object o) {
         if (o==null) {
             for (Entry<E> e = header.previous; e != header; e = e.previous) {
@@ -502,7 +331,7 @@ public class CopyList3<E>
 	    lastReturned = next;
 	    next = next.next;
 	    nextIndex++;
-	    return lastReturned.element.get(0);
+	    return lastReturned.element;
 	}
 
 	public boolean hasPrevious() {
@@ -516,7 +345,7 @@ public class CopyList3<E>
 	    lastReturned = next = next.previous;
 	    nextIndex--;
 	    checkForComodification();
-	    return lastReturned.element.get(0);
+	    return lastReturned.element;
 	}
 
 	public int nextIndex() {
@@ -531,7 +360,7 @@ public class CopyList3<E>
             checkForComodification();
             Entry<E> lastNext = lastReturned.next;
             try {
-                CopyList3.this.remove(lastReturned);
+                CopyList02.this.remove(lastReturned);
             } catch (NoSuchElementException e) {
                 throw new IllegalStateException();
             }
@@ -547,16 +376,13 @@ public class CopyList3<E>
 	    if (lastReturned == header)
 		throw new IllegalStateException();
 	    checkForComodification();
-	    lastReturned.element.set(0, e);
+	    lastReturned.element = e;
 	}
 
 	public void add(E e) {
 	    checkForComodification();
 	    lastReturned = header;
-	    //Change sy
-    	elementList.add(e);
-    	addBefore(elementList, next);
-    	
+	    addBefore(e, next);
 	    nextIndex++;
 	    expectedModCount++;
 	}
@@ -567,29 +393,27 @@ public class CopyList3<E>
 	}
     }
 
-    // element를 ArrayList로 구현
     private static class Entry<E> {
-	ArrayList<E> element;
+	E element;
 	Entry<E> next;
 	Entry<E> previous;
 
-	Entry(ArrayList<E> element, Entry<E> next, Entry<E> previous) {
+	Entry(E element, Entry<E> next, Entry<E> previous) {
 	    this.element = element;
 	    this.next = next;
 	    this.previous = previous;
 	}
     }
 
-    private Entry<E> addBefore(ArrayList<E> e, Entry<E> entry) {
+    
+    // Change!!
+    private Entry<E> addBefore(E e, Entry<E> entry) {
 		Entry<E> newEntry = new Entry<E>(e, entry, entry.previous);
 		newEntry.previous.next = newEntry;
 		newEntry.next.previous = newEntry;
-		//Change sy
-		elementListSize++;
-		if(elementListSize >= elementListCapacity){
-			elementListCapacity++;
-		}
-		size++;
+		
+		ensureCapacity(size + 1);  // Increments modCount!!
+		elementData[size++] = e;
 		modCount++;
 		return newEntry;
     }
@@ -598,24 +422,20 @@ public class CopyList3<E>
 	if (e == header)
 	    throw new NoSuchElementException();
 
-        E result = e.element.get(0);
-        e.previous.next = e.next;
-        e.next.previous = e.previous;
+        E result = e.element;
+	e.previous.next = e.next;
+	e.next.previous = e.previous;
         e.next = e.previous = null;
         e.element = null;
-        size--;
-        modCount++;
+	size--;
+	modCount++;
         return result;
     }
 
-    /**
-     * @since 1.6
-     */
     public Iterator<E> descendingIterator() {
         return new DescendingIterator();
     }
 
-    /** Adapter to provide descending iterators via ListItr.previous */
     private class DescendingIterator implements Iterator {
         final ListItr itr = new ListItr(size());
 	public boolean hasNext() {
@@ -629,6 +449,26 @@ public class CopyList3<E>
         }
     }
 
+    public Object clone() {
+        CopyList02<E> clone = null;
+	try {
+	    clone = (CopyList02<E>) super.clone();
+	} catch (CloneNotSupportedException e) {
+	    throw new InternalError();
+	}
+
+        // Put clone into "virgin" state
+        clone.header = new Entry<E>(null, null, null);
+        clone.header.next = clone.header.previous = clone.header;
+        clone.size = 0;
+        clone.modCount = 0;
+
+        // Initialize clone with our elements
+        for (Entry<E> e = header.next; e != header; e = e.next)
+            clone.add(e.element);
+
+        return clone;
+    }
 
     public Object[] toArray() {
 	Object[] result = new Object[size];
@@ -641,8 +481,7 @@ public class CopyList3<E>
 
     public <T> T[] toArray(T[] a) {
         if (a.length < size)
-            a = (T[])java.lang.reflect.Array.newInstance(
-                                a.getClass().getComponentType(), size);
+            a = (T[])java.lang.reflect.Array.newInstance(a.getClass().getComponentType(), size);
         int i = 0;
 	Object[] result = a;
         for (Entry<E> e = header.next; e != header; e = e.next)
@@ -683,11 +522,27 @@ public class CopyList3<E>
         header.next = header.previous = header;
 
 	// Read in all elements in the proper order.
-	for (int i=0; i<size; i++) {
-		ArrayList<E> readObject = new ArrayList<E>();
-		readObject.add((E)s.readObject());
-        addBefore(readObject, header);
-	}
-			
+	for (int i=0; i<size; i++)
+            addBefore((E)s.readObject(), header);
+    }
+    
+    // Change!! arraylist()
+    public void ensureCapacity(int minCapacity) {
+    	modCount++;
+    	int oldCapacity = elementData.length;
+    	if (minCapacity > oldCapacity) {
+    	    Object oldData[] = elementData;
+    	    int newCapacity = (oldCapacity * 3)/2 + 1;
+        	    if (newCapacity < minCapacity)
+    		newCapacity = minCapacity;
+                // minCapacity is usually close to size, so this is a win:
+                elementData = Arrays.copyOf(elementData, newCapacity);
+    	}
+    }
+    
+    private void RangeCheck(int index) {
+    	if (index >= size)
+    	    throw new IndexOutOfBoundsException(
+    		"Index: "+index+", Size: "+size);
     }
 }
