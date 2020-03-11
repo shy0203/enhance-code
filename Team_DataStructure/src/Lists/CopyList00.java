@@ -2,18 +2,18 @@ package Lists;
 
 import java.util.*;
 
-public class LinkedList_sg<E>
+public class CopyList00<E>
     extends AbstractSequentialList<E>
     implements List<E>, Deque<E>, Cloneable, java.io.Serializable
 {
     private transient Entry<E> header = new Entry<E>(null, null, null);
     private transient int size = 0;
 
-    public LinkedList_sg() {
+    public CopyList00() {
         header.next = header.previous = header;
     }
 
-    public LinkedList_sg(Collection<? extends E> c) {
+    public CopyList00(Collection<? extends E> c) {
 	this();
 	addAll(c);
     }
@@ -235,7 +235,7 @@ public class LinkedList_sg<E>
     	if(size == 0)
     		return null;
     	
-    	LinkedList_sg<E> tempList = (LinkedList_sg<E>) this.clone();
+    	CopyList00<E> tempList = (CopyList00<E>) this.clone();
     	
     	if(index == 0)
     		return tempList.header.next.element;
@@ -451,7 +451,7 @@ public class LinkedList_sg<E>
             checkForComodification();
             Entry<E> lastNext = lastReturned.next;
             try {
-                LinkedList_sg.this.remove(lastReturned);
+                CopyList00.this.remove(lastReturned);
             } catch (NoSuchElementException e) {
                 throw new IllegalStateException();
             }
@@ -537,9 +537,9 @@ public class LinkedList_sg<E>
     }
 
     public Object clone() {
-        LinkedList_sg<E> clone = null;
+        CopyList00<E> clone = null;
 	try {
-	    clone = (LinkedList_sg<E>) super.clone();
+	    clone = (CopyList00<E>) super.clone();
 	} catch (CloneNotSupportedException e) {
 	    throw new InternalError();
 	}
