@@ -105,7 +105,7 @@ public class Remote_Control implements Control_Tool {
 		
 		try {
 			copyList = (List<Integer>) classes[research_num].newInstance();	// 해당 번호에 맞는 클래스의 인스턴스 생성
-			
+			//실험부
 			e.Analysis_add(copyList, className);
 			e.Analysis_get(copyList, className);
 			
