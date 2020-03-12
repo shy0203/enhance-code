@@ -2,15 +2,14 @@ package Lists;
 
 import java.util.*;
 
-public class CopyList06<E> 
-	extends AbstractSequentialList<E> 
-	implements List<E>, Deque<E>, Cloneable, java.io.Serializable {
-	
+public class CopyList06<E> extends AbstractSequentialList<E> implements
+		List<E>, Deque<E>, Cloneable, java.io.Serializable {
+
 	private transient Entry<E> header = new Entry<E>(null, null, null);
 	private transient int size = 0;
 	private ArrayList<StdEntry> stdList = new ArrayList<StdEntry>();
 	private int std;
-	
+
 	// 리스트의 제한성을 통일 시키기 위해 static
 	private static int limit = -1;
 
@@ -33,12 +32,12 @@ public class CopyList06<E>
 	public CopyList06() {
 		header.next = header.previous = header;
 		std = 8;
-		
-		if(limit == -1) {
+
+		if (limit == -1) {
 			Scanner scan = new Scanner(System.in);
-			
-			System.out.print("-------------------\n0.[제한 X]  1.[제한O]\n-------------------:");
-			limit = scan.nextInt();			
+
+			System.out.print("----------------------\n0.[제한 X]  1.[제한O]\n----------------------:");
+			limit = scan.nextInt();
 		}
 	}
 
@@ -178,30 +177,50 @@ public class CopyList06<E>
 		if (index < 0 || index >= size)
 			throw new IndexOutOfBoundsException("Index: " + index + ", Size: "
 					+ size);
-
-		int tempIndex = -1;
+		
 		Entry<E> e = header;
+		if(index == 0)
+			return e.next;
 		
-		for(int i = 0; i < stdList.size(); i++) {
+		// 기준 리스트의 길이
+		int stdLength = stdList.size();
+		
+		// 기준 리스트에 값과 비교
+		for(int i = 1; i < stdLength; i++) {
 			if (stdList.get(i).stdIndex >= index) {
-				if (i != 0)
+				// 이전 기준점과 다음 기준점과의 거리를 비교해서 이전 기준점이 더 가까우면 이전 기준점부터 앞으로 탐색
+				if(Math.abs(stdList.get(i).stdIndex - index) > Math.abs(stdList.get(i - 1).stdIndex - index)) {
 					e = stdList.get(i - 1).stdEntry;
-
-				tempIndex = i;
-				break;
+					for(int j = 0; j < Math.abs(stdList.get(i - 1).stdIndex - index); j++) {
+						e = e.next;
+					}
+				}
+				// 이전 기준점과 다음 기준점과의 거리를 비교해서 다음 기준점이 더 가까우면 다음 기준점부터 뒤로 탐색
+				else {
+					e = stdList.get(i).stdEntry;
+					for(int j = 0; j < Math.abs(stdList.get(i).stdIndex - index); j++) {
+						e = e.previous;
+					}
+				}
+				return e;
 			}
-
 		}
 		
-		if(tempIndex != -1)
-			for(int i = 0; i <= stdList.get(tempIndex).stdIndex - index; i++) {
-				e = e.next;			
+		// 기준 리스트의 마지막과 꼬리의 위치를 비교해서 더 가까운 쪽에서부터 탐색
+		if(Math.abs(stdList.get(stdLength - 1).stdIndex - index) > (size - index) ) {;
+			for(int j = 0; j < size - index; j++) {
+				e = e.previous;
 			}
+		}
 		else {
-			for (int i = size; i > index; i--)
-				e = e.previous;		
+			e = stdList.get(stdLength - 1).stdEntry;
+			// 기준 리스트에 기준이 될만한 인덱스가 없으므로 꼬리에서부터 
+			for(int i = 0; i < index - stdList.get(stdLength - 1).stdIndex; i++) {
+				e = e.next;
+			}
 		}
-		
+
+	
 		return e;
 	}
 
@@ -451,17 +470,17 @@ public class CopyList06<E>
 			stdList.add(new StdEntry<E>(size, newEntry));
 		}
 		size++;
-		
+
 		// 제한이 없는 버전
-		if(limit == 0) {
-			if(size >= std * 16)
+		if (limit == 0) {
+			if (size >= std * 16)
 				std *= 16;
 		}
 		// 제한 있는 버전
-		else if(limit == 1)
-			if(size >= std * 16 && std < 1000)
+		else if (limit == 1)
+			if (size >= std * 16 && std < 1000)
 				std *= 16;
-		
+
 		modCount++;
 		return newEntry;
 	}
@@ -473,6 +492,12 @@ public class CopyList06<E>
 		E result = e.element;
 		e.previous.next = e.next;
 		e.next.previous = e.previous;
+		for (int i = 0; i < stdList.size(); i++) {
+			if (stdList.get(i).stdEntry.equals(e)) {
+				stdList.remove(i);
+				break;
+			}
+		}
 		e.next = e.previous = null;
 		e.element = null;
 		size--;

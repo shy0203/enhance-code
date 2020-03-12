@@ -46,7 +46,7 @@ public class Remote_Control implements Control_Tool {
 					try {
 						classlist = Class.forName(packageName + "." + file);	// 동적로딩 : 해당 클래스를 메모리로 로드
 						
-						isName = classlist.getName().contains("$");	// 동적로딩한 클래스의 이름에서 '$'문자 제거
+						isName = classlist.getName().contains("$");	// 동적로딩한 클래스의 이름에서 '$'문자 포함 확인
 						
 						if(!isName) {
 							copylists.add(classlist);	// return할 변수 copylists에 클래스리스트들을 담음
