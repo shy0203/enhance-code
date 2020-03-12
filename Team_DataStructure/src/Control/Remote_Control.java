@@ -99,7 +99,7 @@ public class Remote_Control implements Control_Tool {
 	public void experiment_select() {
 		// 실험번호를 받아 실험번호를 받아 그에 해당하는 클래스를 실험
 		List<Integer> copyList;
-		Data_Experiment e = new Data_Experiment();
+		Data_Experiment e = Data_Experiment.getInstance();
 		
 		this.getClassName();	// 이 동작으로 인해 getClass(), insertNum() 실험하기 위한 초기 조건 세팅
 		
