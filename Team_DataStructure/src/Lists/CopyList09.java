@@ -1,6 +1,16 @@
 package Lists;
 
-import java.util.*;
+import java.util.AbstractSequentialList;
+import java.util.Collection;
+import java.util.ConcurrentModificationException;
+import java.util.Deque;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.NoSuchElementException;
+import java.util.Queue;
+
+
 public class CopyList09<E> extends AbstractSequentialList<E>
 		implements List<E>, Deque<E>, Cloneable, java.io.Serializable {
 

@@ -6,7 +6,6 @@ import Lists.CopyList00;
 
 public abstract class Data_Measure extends Data_Tool {
 	// add(), get(), 기타 동작에 대한 세부적인 부분 (시간측정 및 올바른 결과 출력, 동작 수정 및 추가 가능)
-	
 	public void Measure_add(List<Integer> list, String name) {
 		
 		start = System.nanoTime();

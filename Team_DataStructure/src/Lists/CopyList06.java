@@ -37,7 +37,7 @@ public class CopyList06<E>
 		if(limit == -1) {
 			Scanner scan = new Scanner(System.in);
 			
-			System.out.println("0. 제한 X\n1. 제한");
+			System.out.print("-------------------\n0.[제한 X]  1.[제한O]\n-------------------  ");
 			limit = scan.nextInt();			
 		}
 	}
