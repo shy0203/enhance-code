@@ -1,6 +1,4 @@
-import java.io.IOException;
-import java.util.List;
-import java.util.Scanner;
+import java.util.LinkedList;
 
 import Control.Remote_Control;
 
