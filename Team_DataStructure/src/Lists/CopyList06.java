@@ -36,7 +36,8 @@ public class CopyList06<E> extends AbstractSequentialList<E> implements
 		if (limit == -1) {
 			Scanner scan = new Scanner(System.in);
 
-			System.out.print("----------------------\n0.[제한 X]  1.[제한O]\n----------------------:");
+			System.out
+					.print("---------------------\n0.[제한 X]  1.[제한O]\n---------------------: ");
 			limit = scan.nextInt();
 		}
 	}
@@ -144,6 +145,13 @@ public class CopyList06<E> extends AbstractSequentialList<E> implements
 		Entry<E> e = header.next;
 		while (e != header) {
 			Entry<E> next = e.next;
+			
+			// next와 같은 주소를 참조하는 객체 검색 후 배열에서 제거
+			for(int i = 0, length = stdList.size(); i < length; i++) {				
+				if(stdList.get(i).stdEntry.equals(next))
+					stdList.remove(i);
+			}
+			
 			e.next = e.previous = null;
 			e.element = null;
 			e = next;
@@ -492,11 +500,15 @@ public class CopyList06<E> extends AbstractSequentialList<E> implements
 		E result = e.element;
 		e.previous.next = e.next;
 		e.next.previous = e.previous;
-		for (int i = 0; i < stdList.size(); i++) {
+		
+		for (int i = 0, length = stdList.size(); i < length; i++) {
 			if (stdList.get(i).stdEntry.equals(e)) {
 				stdList.remove(i);
 				break;
 			}
+		}
+		for(int i = 0, length = stdList.size(); i < length; i++) {
+			stdList.get(i).stdIndex--;
 		}
 		e.next = e.previous = null;
 		e.element = null;
