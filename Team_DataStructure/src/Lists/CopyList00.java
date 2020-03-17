@@ -2,10 +2,9 @@ package Lists;
 
 import java.util.*;
 
-public class CopyList00<E>
-    extends AbstractSequentialList<E>
-    implements List<E>, Deque<E>, Cloneable, java.io.Serializable
-{
+public class CopyList00<E> extends AbstractSequentialList<E>
+    implements List<E>, Deque<E>, Cloneable, java.io.Serializable {
+	
     private transient Entry<E> header = new Entry<E>(null, null, null);
     private transient int size = 0;
 
@@ -31,7 +30,6 @@ public class CopyList00<E>
 
 	return header.previous.element;
     }
-
 
     public E removeFirst() {
 	return remove(header.next);
@@ -198,111 +196,116 @@ public class CopyList00<E>
         return getFirst();
     }
     
-    
     // Change-DH
-    public E SequentialGet() {
+    public E sequentialGet() {
     	if(size == 0)
     		return null;
+    	// 원래 리스트의 헤더를 꼬리로 보냄
+    	E e = HeaderToTail(this);
+    	
+    	return e;
+    }   
+    
+    // Change-DH
+    /* 리스트를 인덱스 만큼 변경시켜서 값을 얻고 다시 원 상태로 돌리는 함수
+     * 헤더의 다음 위치를 인덱스 수 만큼 꼬리로 보내서 그 위치의 값을 얻은 후에
+     * 다시 꼬리를 헤더의 다음 위치로 회전시켜서 데이터의 변경을 막는다 
+     */
+    public E rotationGet(int index) {
+    	if(size == 0)
+    		return null;
+    	
+    	E e = null;
+    	
+    	if(index == 0)
+    		return header.next.element;
+    	
+    	for(int i = 0; i <= index; i++) 
+        	e = HeaderToTail(this);   	
+    	
+    	for(int i = 0; i <= index; i++)
+    		TailToHeader(this);
+    	return e;
+    }
+    
+    // Change-DH
+    /* 원래 리스트를 복사한 후에 복사된 리스트를 회전시켜서 값을 얻음
+     * 그 후에 복사된 리스트는 버리고 값만을 얻기 때문에 기존 리스트의 데이터의 변경이 없음
+     * 복사하는 시간 때문에 반복문에 사용 불가능 
+     */
+    public E copyRotationGet(int index) {
+    	if(size == 0)
+    		return null;
+    	// 현재 리스트 깊은 복사
+    	CopyList00<E> tempList = (CopyList00<E>) this.clone();
+    	
+    	// 인덱스가 0이면 바로 헤더의 다음 요소 반환
+    	if(index == 0)
+    		return tempList.header.next.element;
+    	 	
+    	E e = null;
+    	
+    	for(int i = 0; i <= index; i++) {
+    		e = HeaderToTail(tempList);
+    	}  	
+    	return e;
+    }
  
-    	Entry<E> temp = header.next;
+    // Change-DH
+    /* 매개변수로 받은 객체의 리스트를 돌림
+     * 헤더의 다음 요소를 꼬리로 회전시키는 함수
+     * 헤더, 다음 노드(인덱스 0), 그 다음 노드(인덱스 1)..... 꼬리(마지막 인덱스)
+     */
+    public E HeaderToTail(CopyList00<E> tempList) {
     	
-    	HeaderToTail(temp);
+    	/* 헤더와 인덱스1 노드 사이에 있는 인덱스0 노드를 빼내고
+    	 * 헤더와 인덱스1 노드를 연결하는 과정
+    	 */
+    	// 임시 노드에 인덱스0 노드 저장
+    	Entry<E> temp = tempList.header.next;
+    	// 리스트의 헤더의 다음 주소에  인덱스1 저장
+    	tempList.header.next = temp.next;
+    	// 인덱스1의 이전 주소에 헤더 저장
+    	temp.next.previous = tempList.header;   	
     	
+    	/* 헤더와 꼬리 사이에 위에서 빼낸 
+    	 * 인덱스0 노드를 추가하는 과정
+    	 */
+    	// 인덱스0의 다음 위치는 헤더
+    	temp.next = tempList.header;
+    	// 리스트의 기존 꼬리 뒤에 인덱스0 노드 저장
+    	tempList.header.previous.next = temp;
+    	// 인덱스0 노드의 이전 주소에 기존 꼬리 주소 저장
+    	temp.previous = tempList.header.previous;
+    	// 리스트의 꼬리에 인덱스0 노드 저장
+    	tempList.header.previous = temp;
+    	
+    	// 인덱스0의 값 반환(위치는 꼬리인 상태임)
     	return temp.element;
     }
     
- // Change-DH 너무 느림
-//    public E SequentialGet(int index) {
-//    	if(size == 0)
-//    		return null;
-//    	
-//    	Entry<E> temp = null;
-//    	if(index == 0)
-//    		return header.next.element;
-//    	for(int i = 0; i < index; i++) 
-//        	HeaderToTail(temp);
-//        
-//    	E e = header.next.element;
-//    	
-//    	for(int i = 0; i < index; i++)
-//    		TailToHeader(temp);
-//    	return e;
-//    	
-//    }
-    
-    // Change-DH 더 느림 (반복문에 사용 불가)
-    public E SequentialGet(int index) {
-    	if(size == 0)
-    		return null;
-    	
-    	CopyList00<E> tempList = (CopyList00<E>) this.clone();
-    	
-    	if(index == 0)
-    		return tempList.header.next.element;
-    	Entry<E> temp = null;
-    	for(int i = 0; i < index; i++) {
-    		temp = tempList.header.next;
-    		tempList.header.next = temp.next;
-    		temp.next.previous = tempList.header;
-        	
-    		temp.next = tempList.header;
-        	tempList.header.previous.next = temp;
-        	temp.previous = tempList.header.previous;
-        	tempList.header.previous = temp;
-    	}
-    	
-    	return tempList.header.next.element;
-    	
-    }
-    
-// // Change-DH 더 느림
-//    public E SequentialGet(int index) {
-//    	if(size == 0)
-//    		return null;
-//    	
-//    	if(index == 0)
-//    		return header.next.element;
-//    	
-//    	Entry<E> temp = header.next;
-//    	
-//    	for(int i = 0; i < index; i++) {
-//    		HeaderToTail(temp);
-//    	}
-//        	
-//    	
-//    	return temp.element;
-//    	
-//    }
-//    
-    // Change-DH
-    public void HeaderToTail(Entry<E> temp) {
-    	temp = header.next;
-    	header.next = temp.next;
-    	temp.next.previous = header;
-    	
-    	temp.next = header;
-    	header.previous.next = temp;
-    	temp.previous = header.previous;
-    	header.previous = temp;
-    }
-    
-    // Change-DH
-    public void TailToHeader(Entry<E> temp) {
-    	temp = header.previous;
-		header.previous = temp.previous;
-		temp.previous.next = header;
 
-		temp.next = header.next;
-		header.next = temp;
+    // Change-DH
+    /* 위의 함수의 정 반대과정
+     * 꼬리 노드를 헤더의 다음 노드로 변경해주는 함수
+     * 설명은 위의 정 반대 과정이니 생략
+     */
+    public E TailToHeader(CopyList00<E> tempList) {
+    	Entry<E> temp = tempList.header.previous;
+    	tempList.header.previous = temp.previous;
+		temp.previous.next = tempList.header;
+
+		temp.next = tempList.header.next;
+		tempList.header.next = temp;
 		temp.next.previous = temp;
-		temp.previous = header;
+		temp.previous = tempList.header;
+		
+		return temp.element;
     }
-    
-    
+       
     public E element() {
         return getFirst();
     }
-
 
     public E poll() {
         if (size==0)
@@ -383,7 +386,6 @@ public class CopyList00<E>
         }
         return false;
     }
-
 
     public ListIterator<E> listIterator(int index) {
 	return new ListItr(index);
@@ -496,7 +498,6 @@ public class CopyList00<E>
 	}
     }
     
-
     private Entry<E> addBefore(E e, Entry<E> entry) {
 	Entry<E> newEntry = new Entry<E>(e, entry, entry.previous);
 	newEntry.previous.next = newEntry;

@@ -2,30 +2,31 @@ package Lists;
 
 import java.util.*;
 
+// 자동으로 기준을 생성하는 리스트
 public class CopyList06<E> extends AbstractSequentialList<E> implements
 		List<E>, Deque<E>, Cloneable, java.io.Serializable {
 
-	private transient Entry<E> header = new Entry<E>(null, null, null);
+	private transient Node<E> header = new Node<E>(null, null, null);
 	private transient int size = 0;
-	private ArrayList<StdEntry> stdList = new ArrayList<StdEntry>();
+	private ArrayList<StdNode<E>> stdList = new ArrayList<StdNode<E>>();
 	private int std;
 
 	// 리스트의 제한성을 통일 시키기 위해 static
 	private static int limit = -1;
 
 	// Change-DH
-	class StdEntry<E> {
+	class StdNode<E> {
 		private int stdIndex;
-		private Entry<E> stdEntry;
+		private Node<E> stdNode;
 
-		public StdEntry() {
+		public StdNode() {
 			stdIndex = 0;
-			stdEntry = null;
+			stdNode = null;
 		}
 
-		public StdEntry(int index, Entry<E> entry) {
+		public StdNode(int index, Node<E> Node) {
 			stdIndex = index;
-			stdEntry = entry;
+			stdNode = Node;
 		}
 	}
 
@@ -39,10 +40,12 @@ public class CopyList06<E> extends AbstractSequentialList<E> implements
 			System.out
 					.print("---------------------\n1.[제한 X]  2.[제한O]\n---------------------...");
 			limit = scan.nextInt();
+			scan.close();
 		}
 		// Change Sangyun
 		if(limit != 1 && limit != 2){
 			System.out.println("잘못된 입력입니다  >>> 제한 없는 버전 실험 진행");
+			limit = 1;
 		}
 	}
 
@@ -101,14 +104,14 @@ public class CopyList06<E> extends AbstractSequentialList<E> implements
 
 	public boolean remove(Object o) {
 		if (o == null) {
-			for (Entry<E> e = header.next; e != header; e = e.next) {
+			for (Node<E> e = header.next; e != header; e = e.next) {
 				if (e.element == null) {
 					remove(e);
 					return true;
 				}
 			}
 		} else {
-			for (Entry<E> e = header.next; e != header; e = e.next) {
+			for (Node<E> e = header.next; e != header; e = e.next) {
 				if (o.equals(e.element)) {
 					remove(e);
 					return true;
@@ -122,6 +125,7 @@ public class CopyList06<E> extends AbstractSequentialList<E> implements
 		return addAll(size, c);
 	}
 
+	// Change
 	public boolean addAll(int index, Collection<? extends E> c) {
 		if (index < 0 || index > size)
 			throw new IndexOutOfBoundsException("Index: " + index + ", Size: "
@@ -132,10 +136,29 @@ public class CopyList06<E> extends AbstractSequentialList<E> implements
 			return false;
 		modCount++;
 
-		Entry<E> successor = (index == size ? header : entry(index));
-		Entry<E> predecessor = successor.previous;
-		for (int i = 0; i < numNew; i++) {
-			Entry<E> e = new Entry<E>((E) a[i], successor, predecessor);
+		Node<E> successor = (index == size ? header : Node(index));
+		Node<E> predecessor = successor.previous;
+
+		// 매개변수로 컬렉션이 들어오는 경우
+		for (int i = 0, std = 8; i < numNew; i++) {
+			Node<E> e = new Node<E>((E) a[i], successor, predecessor);
+
+			// 비워있는 경우라면 그냥 i만 해도 되겠지만
+			// 기존에 있던 리스트 뒤에 리스트가 추가 되는 경우를 위해서
+			// (size + i)를 사용
+			if ((size + i) % std == 0)
+				stdList.add(new StdNode<E>((size + i), e)); // 새로운 기준 추가
+
+			// 제한이 없는 버전
+			if (limit == 1) {
+				if (i >= std * 16)
+					std *= 16;
+			}
+			// 제한 있는 버전
+			else if (limit == 2)
+				if (i >= std * 16 && std < 1000)
+					std *= 16;
+
 			predecessor.next = e;
 			predecessor = e;
 		}
@@ -145,107 +168,116 @@ public class CopyList06<E> extends AbstractSequentialList<E> implements
 		return true;
 	}
 
+	// Change
 	public void clear() {
-		Entry<E> e = header.next;
+		Node<E> e = header.next;
 		while (e != header) {
-			Entry<E> next = e.next;
-			
+			Node<E> next = e.next;
+
 			// next와 같은 주소를 참조하는 객체 검색 후 배열에서 제거
-			for(int i = 0, length = stdList.size(); i < length; i++) {				
-				if(stdList.get(i).stdEntry.equals(next))
-					stdList.remove(i);
-			}
-			
+			// for(int i = 0, length = stdList.size(); i < length; i++) {
+			// if(stdList.get(i).stdNode.equals(next)) {
+			// stdList.remove(i);
+			// break;
+			// }
+			// }
 			e.next = e.previous = null;
 			e.element = null;
 			e = next;
 		}
+
+		// 이게 더 편함 null 값된 배열 비우는 함수 호출
+		// 어차피 clear() 함수는 전부 다 지우는거니까 지울때마다 stdList를 탐색하는 것보단
+		// null 값을 가진 stdList를 나중에 비워버리는게 편함
+		stdList.clear();
 		header.next = header.previous = header;
 		size = 0;
 		modCount++;
 	}
 
 	public E get(int index) {
-		return entry(index).element;
+		return Node(index).element;
 	}
 
 	public E set(int index, E element) {
-		Entry<E> e = entry(index);
+		Node<E> e = Node(index);
 		E oldVal = e.element;
 		e.element = element;
 		return oldVal;
 	}
 
 	public void add(int index, E element) {
-		addBefore(element, (index == size ? header : entry(index)));
+		addBefore(element, (index == size ? header : Node(index)));
 	}
 
 	public E remove(int index) {
-		return remove(entry(index));
+		return remove(Node(index));
 	}
 
 	// Change-DH
-	private Entry<E> entry(int index) {
+	private Node<E> Node(int index) {
 		if (index < 0 || index >= size)
 			throw new IndexOutOfBoundsException("Index: " + index + ", Size: "
 					+ size);
-		
-		Entry<E> e = header;
-		if(index == 0)
+
+		Node<E> e = header;
+		if (index == 0)
 			return e.next;
-		
+
 		// 기준 리스트의 길이
 		int stdLength = stdList.size();
-		
+
 		// 기준 리스트에 값과 비교
-		for(int i = 1; i < stdLength; i++) {
+		for (int i = 1; i < stdLength; i++) {
 			if (stdList.get(i).stdIndex >= index) {
 				// 이전 기준점과 다음 기준점과의 거리를 비교해서 이전 기준점이 더 가까우면 이전 기준점부터 앞으로 탐색
-				if(Math.abs(stdList.get(i).stdIndex - index) > Math.abs(stdList.get(i - 1).stdIndex - index)) {
-					e = stdList.get(i - 1).stdEntry;
-					for(int j = 0; j < Math.abs(stdList.get(i - 1).stdIndex - index); j++) {
+				if (Math.abs(stdList.get(i).stdIndex - index) > Math
+						.abs(stdList.get(i - 1).stdIndex - index)) {
+					e = stdList.get(i - 1).stdNode;
+					for (int j = 0; j < Math.abs(stdList.get(i - 1).stdIndex
+							- index); j++) {
 						e = e.next;
 					}
 				}
 				// 이전 기준점과 다음 기준점과의 거리를 비교해서 다음 기준점이 더 가까우면 다음 기준점부터 뒤로 탐색
 				else {
-					e = stdList.get(i).stdEntry;
-					for(int j = 0; j < Math.abs(stdList.get(i).stdIndex - index); j++) {
+					e = stdList.get(i).stdNode;
+					for (int j = 0; j < Math.abs(stdList.get(i).stdIndex
+							- index); j++) {
 						e = e.previous;
 					}
 				}
 				return e;
 			}
 		}
-		
+
 		// 기준 리스트의 마지막과 꼬리의 위치를 비교해서 더 가까운 쪽에서부터 탐색
-		if(Math.abs(stdList.get(stdLength - 1).stdIndex - index) > (size - index) ) {;
-			for(int j = 0; j < size - index; j++) {
+		if (Math.abs(stdList.get(stdLength - 1).stdIndex - index) > (size - index)) {
+			;
+			for (int j = 0; j < size - index; j++) {
 				e = e.previous;
 			}
-		}
-		else {
-			e = stdList.get(stdLength - 1).stdEntry;
-			// 기준 리스트에 기준이 될만한 인덱스가 없으므로 꼬리에서부터 
-			for(int i = 0; i < index - stdList.get(stdLength - 1).stdIndex; i++) {
+		} else {
+			e = stdList.get(stdLength - 1).stdNode;
+			// 기준 리스트에 기준이 될만한 인덱스가 없으므로 꼬리에서부터
+			for (int i = 0; i < index - stdList.get(stdLength - 1).stdIndex; i++) {
 				e = e.next;
 			}
 		}
 
-	
 		return e;
 	}
 
 	public int indexOf(Object o) {
 		int index = 0;
 		if (o == null) {
-			for (Entry e = header.next; e != header; e = e.next) {
+			for (Node<E> e = header.next; e != header; e = e.next) {
 				if (e.element == null)
 					return index;
 				index++;
 			}
 		} else {
-			for (Entry e = header.next; e != header; e = e.next) {
+			for (Node<E> e = header.next; e != header; e = e.next) {
 				if (o.equals(e.element))
 					return index;
 				index++;
@@ -257,13 +289,13 @@ public class CopyList06<E> extends AbstractSequentialList<E> implements
 	public int lastIndexOf(Object o) {
 		int index = size;
 		if (o == null) {
-			for (Entry e = header.previous; e != header; e = e.previous) {
+			for (Node<E> e = header.previous; e != header; e = e.previous) {
 				index--;
 				if (e.element == null)
 					return index;
 			}
 		} else {
-			for (Entry e = header.previous; e != header; e = e.previous) {
+			for (Node<E> e = header.previous; e != header; e = e.previous) {
 				index--;
 				if (o.equals(e.element))
 					return index;
@@ -344,14 +376,14 @@ public class CopyList06<E> extends AbstractSequentialList<E> implements
 
 	public boolean removeLastOccurrence(Object o) {
 		if (o == null) {
-			for (Entry<E> e = header.previous; e != header; e = e.previous) {
+			for (Node<E> e = header.previous; e != header; e = e.previous) {
 				if (e.element == null) {
 					remove(e);
 					return true;
 				}
 			}
 		} else {
-			for (Entry<E> e = header.previous; e != header; e = e.previous) {
+			for (Node<E> e = header.previous; e != header; e = e.previous) {
 				if (o.equals(e.element)) {
 					remove(e);
 					return true;
@@ -366,8 +398,8 @@ public class CopyList06<E> extends AbstractSequentialList<E> implements
 	}
 
 	private class ListItr implements ListIterator<E> {
-		private Entry<E> lastReturned = header;
-		private Entry<E> next;
+		private Node<E> lastReturned = header;
+		private Node<E> next;
 		private int nextIndex;
 		private int expectedModCount = modCount;
 
@@ -425,7 +457,7 @@ public class CopyList06<E> extends AbstractSequentialList<E> implements
 
 		public void remove() {
 			checkForComodification();
-			Entry<E> lastNext = lastReturned.next;
+			Node<E> lastNext = lastReturned.next;
 			try {
 				CopyList06.this.remove(lastReturned);
 			} catch (NoSuchElementException e) {
@@ -460,12 +492,12 @@ public class CopyList06<E> extends AbstractSequentialList<E> implements
 		}
 	}
 
-	private static class Entry<E> {
+	private static class Node<E> {
 		E element;
-		Entry<E> next;
-		Entry<E> previous;
+		Node<E> next;
+		Node<E> previous;
 
-		Entry(E element, Entry<E> next, Entry<E> previous) {
+		Node(E element, Node<E> next, Node<E> previous) {
 			this.element = element;
 			this.next = next;
 			this.previous = previous;
@@ -473,51 +505,49 @@ public class CopyList06<E> extends AbstractSequentialList<E> implements
 	}
 
 	// Change-DH
-	private Entry<E> addBefore(E e, Entry<E> entry) {
-		Entry<E> newEntry = new Entry<E>(e, entry, entry.previous);
-		newEntry.previous.next = newEntry;
-		newEntry.next.previous = newEntry;
+	private Node<E> addBefore(E e, Node<E> Node) {
+		Node<E> newNode = new Node<E>(e, Node, Node.previous);
+		newNode.previous.next = newNode;
+		newNode.next.previous = newNode;
 
+		// 리스트의 일정 구간마다 기준 추가
 		if (size % std == 0) {
-			stdList.add(new StdEntry<E>(size, newEntry));
+			stdList.add(new StdNode<E>(size, newNode));
 		}
 		size++;
 
-		// 제한이 없는 버전
+		// 제한이 없는 버전(기준이 되는 수가 계속 늘어남)
 		if (limit == 1) {
 			if (size >= std * 16)
 				std *= 16;
 		}
-		// 제한 있는 버전
-		else if (limit == 2) {
+		// 제한 있는 버전 (기준이 되는 수가 일정 수치에서 멈춤)
+		else if (limit == 2)
 			if (size >= std * 16 && std < 1000)
 				std *= 16;
-		}
-		else{
-			if (size >= std * 16){
-				std *= 16;
-			}
-		}
-		
+
 		modCount++;
-		return newEntry;
+		return newNode;
 	}
 
-	private E remove(Entry<E> e) {
+	private E remove(Node<E> e) {
 		if (e == header)
 			throw new NoSuchElementException();
 
 		E result = e.element;
 		e.previous.next = e.next;
 		e.next.previous = e.previous;
-		
+
+		// 지우고자 하는 기준 탐색해서 제거 후 반복문 종료
 		for (int i = 0, length = stdList.size(); i < length; i++) {
-			if (stdList.get(i).stdEntry.equals(e)) {
+			if (stdList.get(i).stdNode.equals(e)) {
 				stdList.remove(i);
 				break;
 			}
 		}
-		for(int i = 0, length = stdList.size(); i < length; i++) {
+
+		// 전체 배열의 길이가 1 줄기 때문에 모든 기준 인덱스 1 낮춤
+		for (int i = 0, length = stdList.size(); i < length; i++) {
 			stdList.get(i).stdIndex--;
 		}
 		e.next = e.previous = null;
@@ -556,13 +586,13 @@ public class CopyList06<E> extends AbstractSequentialList<E> implements
 		}
 
 		// Put clone into "virgin" state
-		clone.header = new Entry<E>(null, null, null);
+		clone.header = new Node<E>(null, null, null);
 		clone.header.next = clone.header.previous = clone.header;
 		clone.size = 0;
 		clone.modCount = 0;
 
 		// Initialize clone with our elements
-		for (Entry<E> e = header.next; e != header; e = e.next)
+		for (Node<E> e = header.next; e != header; e = e.next)
 			clone.add(e.element);
 
 		return clone;
@@ -571,7 +601,7 @@ public class CopyList06<E> extends AbstractSequentialList<E> implements
 	public Object[] toArray() {
 		Object[] result = new Object[size];
 		int i = 0;
-		for (Entry<E> e = header.next; e != header; e = e.next)
+		for (Node<E> e = header.next; e != header; e = e.next)
 			result[i++] = e.element;
 		return result;
 	}
@@ -582,7 +612,7 @@ public class CopyList06<E> extends AbstractSequentialList<E> implements
 					.getComponentType(), size);
 		int i = 0;
 		Object[] result = a;
-		for (Entry<E> e = header.next; e != header; e = e.next)
+		for (Node<E> e = header.next; e != header; e = e.next)
 			result[i++] = e.element;
 
 		if (a.length > size)
@@ -602,7 +632,7 @@ public class CopyList06<E> extends AbstractSequentialList<E> implements
 		s.writeInt(size);
 
 		// Write out all elements in the proper order.
-		for (Entry e = header.next; e != header; e = e.next)
+		for (Node<E> e = header.next; e != header; e = e.next)
 			s.writeObject(e.element);
 	}
 
@@ -615,9 +645,9 @@ public class CopyList06<E> extends AbstractSequentialList<E> implements
 		int size = s.readInt();
 
 		// Initialize header
-		header = new Entry<E>(null, null, null);
+		header = new Node<E>(null, null, null);
 		header.next = header.previous = header;
-		
+
 		// Read in all elements in the proper order.
 		for (int i = 0; i < size; i++)
 			addBefore((E) s.readObject(), header);

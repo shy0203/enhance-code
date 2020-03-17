@@ -9,19 +9,15 @@ public abstract class Data_Tool {
 	protected long start;	// ns단위의 처음 측정 시간
 	protected long end;		// ns단위의 마지막 측정 시간
 	
-	public static void Print_result(long start, long end, int num, String name) {
-		// 실행된 실험에 맞게 알맞은 출력을 위함 (새로운 동작 추가시 출력문 추가 및 수정 가능)
-		if(num == 1){
-			System.out.println(name + " add() 걸린 시간 : " + (end - start) + " ns");
-		}
-		else if(num == 2){
-			System.out.println(name + " get() 걸린 시간 : " + (end - start) + " ns");
-		}
-		else if(num == 3){
-			System.out.println(name + " SequentialGet() 걸린 시간 : " + (end - start) + " ns");
-		}
-		else{
-			System.out.println(name + " 새로운 동작 걸린 시간 : " + (end - start) + " ns");
-		}
+	protected static String methodName;	// 최종 출력될 메소드명
+	
+	public static String reName(String method_name){	// 현재 실행된 메소드명을 받아 print_result()에서 출력하기 위해 동작 명으로 변경
+		String[] methodN = method_name.split("_");
+		methodName = methodN[1];
+		return methodName;
+	}
+	
+	public static void print_result(long start, long end, String analysis_name, String method_name) {	// 실행된 실험의 올바른 결과값 출력
+		System.out.println(analysis_name + " " + method_name + "() 걸린 시간 : " + (end - start) + " ns");
 	}
 }

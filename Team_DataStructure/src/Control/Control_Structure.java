@@ -1,6 +1,6 @@
 package Control;
 
-public interface Control_Tool {
+public interface Control_Structure {
 	// Remote_Control의 동작들을 인터페이스로 묶음
 	@SuppressWarnings("rawtypes")
 	public abstract Class[] getClass(String packageName);	// 패키지 내, 클래스들을 탐색하고 알맞은 클래스들을 list화

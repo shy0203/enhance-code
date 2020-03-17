@@ -6,24 +6,24 @@ public class CopyList05<E>
 	extends AbstractSequentialList<E> 
 	implements List<E>, Deque<E>, Cloneable, java.io.Serializable {
 	
-	private transient Entry<E> header = new Entry<E>(null, null, null);
+	private transient Node<E> header = new Node<E>(null, null, null);
 	private transient int size = 0;
-	private ArrayList<StdEntry> stdList = new ArrayList<StdEntry>();
+	private ArrayList<StdNode<E>> stdList = new ArrayList<StdNode<E>>();
 	private int std;
 
 	// Change-DH
-	class StdEntry<E> {
+	class StdNode<E> {
 		private int stdIndex;
-		private Entry<E> stdEntry;
+		private Node<E> stdNode;
 
-		public StdEntry() {
+		public StdNode() {
 			stdIndex = 0;
-			stdEntry = null;
+			stdNode = null;
 		}
 
-		public StdEntry(int index, Entry<E> entry) {
+		public StdNode(int index, Node<E> Node) {
 			stdIndex = index;
-			stdEntry = entry;
+			stdNode = Node;
 		}
 	}
 
@@ -87,14 +87,14 @@ public class CopyList05<E>
 
 	public boolean remove(Object o) {
 		if (o == null) {
-			for (Entry<E> e = header.next; e != header; e = e.next) {
+			for (Node<E> e = header.next; e != header; e = e.next) {
 				if (e.element == null) {
 					remove(e);
 					return true;
 				}
 			}
 		} else {
-			for (Entry<E> e = header.next; e != header; e = e.next) {
+			for (Node<E> e = header.next; e != header; e = e.next) {
 				if (o.equals(e.element)) {
 					remove(e);
 					return true;
@@ -118,10 +118,10 @@ public class CopyList05<E>
 			return false;
 		modCount++;
 
-		Entry<E> successor = (index == size ? header : entry(index));
-		Entry<E> predecessor = successor.previous;
+		Node<E> successor = (index == size ? header : Node(index));
+		Node<E> predecessor = successor.previous;
 		for (int i = 0; i < numNew; i++) {
-			Entry<E> e = new Entry<E>((E) a[i], successor, predecessor);
+			Node<E> e = new Node<E>((E) a[i], successor, predecessor);
 			predecessor.next = e;
 			predecessor = e;
 		}
@@ -132,9 +132,9 @@ public class CopyList05<E>
 	}
 
 	public void clear() {
-		Entry<E> e = header.next;
+		Node<E> e = header.next;
 		while (e != header) {
-			Entry<E> next = e.next;
+			Node<E> next = e.next;
 			e.next = e.previous = null;
 			e.element = null;
 			e = next;
@@ -145,37 +145,37 @@ public class CopyList05<E>
 	}
 
 	public E get(int index) {
-		return entry(index).element;
+		return Node(index).element;
 	}
 
 	public E set(int index, E element) {
-		Entry<E> e = entry(index);
+		Node<E> e = Node(index);
 		E oldVal = e.element;
 		e.element = element;
 		return oldVal;
 	}
 
 	public void add(int index, E element) {
-		addBefore(element, (index == size ? header : entry(index)));
+		addBefore(element, (index == size ? header : Node(index)));
 	}
 
 	public E remove(int index) {
-		return remove(entry(index));
+		return remove(Node(index));
 	}
 
 	// Change-DH
-	private Entry<E> entry(int index) {
+	private Node<E> Node(int index) {
 		if (index < 0 || index >= size)
 			throw new IndexOutOfBoundsException("Index: " + index + ", Size: "
 					+ size);
 
 		int tempIndex = -1;
-		Entry<E> e = header;
+		Node<E> e = header;
 		
 		for(int i = 0; i < stdList.size(); i++) {
 			if (stdList.get(i).stdIndex >= index) {
 				if (i != 0)
-					e = stdList.get(i - 1).stdEntry;
+					e = stdList.get(i - 1).stdNode;
 
 				tempIndex = i;
 				break;
@@ -196,11 +196,11 @@ public class CopyList05<E>
 	}
 
 	//
-	// private Entry<E> entry(int index) {
+	// private Node<E> Node(int index) {
 	// if (index < 0 || index >= size)
 	// throw new IndexOutOfBoundsException("Index: " + index + ", Size: "
 	// + size);
-	// Entry<E> e = header;
+	// Node<E> e = header;
 	// if (index < (size >> 1)) {
 	// for (int i = 0; i <= index; i++)
 	// e = e.next;
@@ -214,13 +214,13 @@ public class CopyList05<E>
 	public int indexOf(Object o) {
 		int index = 0;
 		if (o == null) {
-			for (Entry e = header.next; e != header; e = e.next) {
+			for (Node<E> e = header.next; e != header; e = e.next) {
 				if (e.element == null)
 					return index;
 				index++;
 			}
 		} else {
-			for (Entry e = header.next; e != header; e = e.next) {
+			for (Node<E> e = header.next; e != header; e = e.next) {
 				if (o.equals(e.element))
 					return index;
 				index++;
@@ -232,13 +232,13 @@ public class CopyList05<E>
 	public int lastIndexOf(Object o) {
 		int index = size;
 		if (o == null) {
-			for (Entry e = header.previous; e != header; e = e.previous) {
+			for (Node<E> e = header.previous; e != header; e = e.previous) {
 				index--;
 				if (e.element == null)
 					return index;
 			}
 		} else {
-			for (Entry e = header.previous; e != header; e = e.previous) {
+			for (Node<E> e = header.previous; e != header; e = e.previous) {
 				index--;
 				if (o.equals(e.element))
 					return index;
@@ -319,14 +319,14 @@ public class CopyList05<E>
 
 	public boolean removeLastOccurrence(Object o) {
 		if (o == null) {
-			for (Entry<E> e = header.previous; e != header; e = e.previous) {
+			for (Node<E> e = header.previous; e != header; e = e.previous) {
 				if (e.element == null) {
 					remove(e);
 					return true;
 				}
 			}
 		} else {
-			for (Entry<E> e = header.previous; e != header; e = e.previous) {
+			for (Node<E> e = header.previous; e != header; e = e.previous) {
 				if (o.equals(e.element)) {
 					remove(e);
 					return true;
@@ -341,8 +341,8 @@ public class CopyList05<E>
 	}
 
 	private class ListItr implements ListIterator<E> {
-		private Entry<E> lastReturned = header;
-		private Entry<E> next;
+		private Node<E> lastReturned = header;
+		private Node<E> next;
 		private int nextIndex;
 		private int expectedModCount = modCount;
 
@@ -400,7 +400,7 @@ public class CopyList05<E>
 
 		public void remove() {
 			checkForComodification();
-			Entry<E> lastNext = lastReturned.next;
+			Node<E> lastNext = lastReturned.next;
 			try {
 				CopyList05.this.remove(lastReturned);
 			} catch (NoSuchElementException e) {
@@ -435,12 +435,12 @@ public class CopyList05<E>
 		}
 	}
 
-	private static class Entry<E> {
+	private static class Node<E> {
 		E element;
-		Entry<E> next;
-		Entry<E> previous;
+		Node<E> next;
+		Node<E> previous;
 
-		Entry(E element, Entry<E> next, Entry<E> previous) {
+		Node(E element, Node<E> next, Node<E> previous) {
 			this.element = element;
 			this.next = next;
 			this.previous = previous;
@@ -448,20 +448,20 @@ public class CopyList05<E>
 	}
 
 	// Change-DH
-	private Entry<E> addBefore(E e, Entry<E> entry) {
-		Entry<E> newEntry = new Entry<E>(e, entry, entry.previous);
-		newEntry.previous.next = newEntry;
-		newEntry.next.previous = newEntry;
+	private Node<E> addBefore(E e, Node<E> Node) {
+		Node<E> newNode = new Node<E>(e, Node, Node.previous);
+		newNode.previous.next = newNode;
+		newNode.next.previous = newNode;
 
 		if (size % std == 0) {
-			stdList.add(new StdEntry<E>(size, newEntry));
+			stdList.add(new StdNode<E>(size, newNode));
 		}
 		size++;
 		modCount++;
-		return newEntry;
+		return newNode;
 	}
 
-	private E remove(Entry<E> e) {
+	private E remove(Node<E> e) {
 		if (e == header)
 			throw new NoSuchElementException();
 
@@ -504,13 +504,13 @@ public class CopyList05<E>
 		}
 
 		// Put clone into "virgin" state
-		clone.header = new Entry<E>(null, null, null);
+		clone.header = new Node<E>(null, null, null);
 		clone.header.next = clone.header.previous = clone.header;
 		clone.size = 0;
 		clone.modCount = 0;
 
 		// Initialize clone with our elements
-		for (Entry<E> e = header.next; e != header; e = e.next)
+		for (Node<E> e = header.next; e != header; e = e.next)
 			clone.add(e.element);
 
 		return clone;
@@ -519,7 +519,7 @@ public class CopyList05<E>
 	public Object[] toArray() {
 		Object[] result = new Object[size];
 		int i = 0;
-		for (Entry<E> e = header.next; e != header; e = e.next)
+		for (Node<E> e = header.next; e != header; e = e.next)
 			result[i++] = e.element;
 		return result;
 	}
@@ -530,7 +530,7 @@ public class CopyList05<E>
 					.getComponentType(), size);
 		int i = 0;
 		Object[] result = a;
-		for (Entry<E> e = header.next; e != header; e = e.next)
+		for (Node<E> e = header.next; e != header; e = e.next)
 			result[i++] = e.element;
 
 		if (a.length > size)
@@ -550,7 +550,7 @@ public class CopyList05<E>
 		s.writeInt(size);
 
 		// Write out all elements in the proper order.
-		for (Entry e = header.next; e != header; e = e.next)
+		for (Node<E> e = header.next; e != header; e = e.next)
 			s.writeObject(e.element);
 	}
 
@@ -563,7 +563,7 @@ public class CopyList05<E>
 		int size = s.readInt();
 
 		// Initialize header
-		header = new Entry<E>(null, null, null);
+		header = new Node<E>(null, null, null);
 		header.next = header.previous = header;
 
 		// Read in all elements in the proper order.

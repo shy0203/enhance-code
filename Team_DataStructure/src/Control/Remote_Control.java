@@ -10,7 +10,7 @@ import java.util.Scanner;
 import Data.Data_Experiment;
 import Lists.*;
 
-public class Remote_Control implements Control_Tool {
+public class Remote_Control implements Control_Structure {
 	// 입력한 실험번호에 맞는 실험 class파일들을 호출하고 실행하는 클래스
 	int length = 0;	// 입력 가능한 숫자 범위
 	Scanner scanNum;	// 입력받은 실험번호
@@ -110,9 +110,10 @@ public class Remote_Control implements Control_Tool {
 			e.Analysis_get(copyList, className);
 			
 			if(research_num == 0){	// LinkedList(=CopyList00)만 실행가능한 동작 예외처리
-				e.Analysis_SequentialGet(copyList, className);
+				e.Analysis_sequentialGet(copyList, className);
+				e.Analysis_rotationGet(copyList, className);
 			}
-		} 
+		}
 		catch (InstantiationException | IllegalAccessException e1) {	// newInstance 메소드로 객체 생성하려는 대상이 추상클래스일 때 예외처리
 			e1.printStackTrace();										// 접근제한자에 의해 접근할 수 없을 때 예외처리
 		}
@@ -122,7 +123,7 @@ public class Remote_Control implements Control_Tool {
 	public void getManual() {
 		// 실험번호 입력 전, 실험번호의 설명을 출력하는 동작
 		classes = this.getClass("Lists");
-		System.out.println("-----------  실험목록    --------------------");
+		System.out.println("-----------  실험목록    ---------------------");
 		
 		for(int i=0; i<length; i++){
 			
