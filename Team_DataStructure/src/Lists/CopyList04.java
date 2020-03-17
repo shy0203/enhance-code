@@ -16,13 +16,34 @@ public class CopyList04<E>
     private ArrayList<E> elementList = new ArrayList<E>();
     private int elementListSize = 0;
     private int elementListCapacity = 10;
-
+    private static int limit = 0;
     
     public CopyList04() {
         header.next = header.previous = header;
+        // Change Sangyun
+        if(limit == 0){
+        	Scanner scan = new Scanner(System.in);
+        	System.out.print("---------------------------------\n"
+        			+ "1.[최대10]  2.[최대100]  3.[최대1000]"
+        			+ "\n---------------------------------...");
+        	limit = scan.nextInt();
+        	
+        	if(limit == 1){
+        		elementListCapacity = 10;
+        	}
+        	else if(limit == 2){
+        		elementListCapacity = 100;
+        	}
+        	else if(limit == 3){
+        		elementListCapacity = 1000;
+        	}
+        	else{
+        		System.out.println("잘못된 입력입니다  >>> 초기값 10 실험 진행");
+        	}
+        }
     }
-    
-    public CopyList04(int elementListCapacity) {
+
+	public CopyList04(int elementListCapacity) {
         header.next = header.previous = header;
         this.elementListCapacity = elementListCapacity;
     }

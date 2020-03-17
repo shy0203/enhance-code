@@ -37,8 +37,12 @@ public class CopyList06<E> extends AbstractSequentialList<E> implements
 			Scanner scan = new Scanner(System.in);
 
 			System.out
-					.print("---------------------\n0.[제한 X]  1.[제한O]\n---------------------: ");
+					.print("---------------------\n1.[제한 X]  2.[제한O]\n---------------------...");
 			limit = scan.nextInt();
+		}
+		// Change Sangyun
+		if(limit != 1 && limit != 2){
+			System.out.println("잘못된 입력입니다  >>> 제한 없는 버전 실험 진행");
 		}
 	}
 
@@ -480,15 +484,21 @@ public class CopyList06<E> extends AbstractSequentialList<E> implements
 		size++;
 
 		// 제한이 없는 버전
-		if (limit == 0) {
+		if (limit == 1) {
 			if (size >= std * 16)
 				std *= 16;
 		}
 		// 제한 있는 버전
-		else if (limit == 1)
+		else if (limit == 2) {
 			if (size >= std * 16 && std < 1000)
 				std *= 16;
-
+		}
+		else{
+			if (size >= std * 16){
+				std *= 16;
+			}
+		}
+		
 		modCount++;
 		return newEntry;
 	}
@@ -607,7 +617,7 @@ public class CopyList06<E> extends AbstractSequentialList<E> implements
 		// Initialize header
 		header = new Entry<E>(null, null, null);
 		header.next = header.previous = header;
-
+		
 		// Read in all elements in the proper order.
 		for (int i = 0; i < size; i++)
 			addBefore((E) s.readObject(), header);
