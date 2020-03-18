@@ -1,6 +1,3 @@
-import java.util.Scanner;
-
-import Control.Search_Class;
 import Control.Remote_Control;
 
 public class Main_Test {
@@ -8,13 +5,9 @@ public class Main_Test {
 
 	public static void main(String[] args) {
 
-		Search_Class printout = Search_Class.getInstanceSeachClass();
-		printout.toPrint();
-		
-		Remote_Control rc = Remote_Control.getInstanceRemoteControl();
-		rc.Experiment_select();
-		
-
+		// 실험하고자하는 번호 선택
+		Remote_Control rc = new Remote_Control();
+		rc.execute();
 
 	}
 }
