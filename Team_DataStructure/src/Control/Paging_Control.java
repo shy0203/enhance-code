@@ -14,7 +14,7 @@ public class Paging_Control {
 	private int startList;
 	
 	private Paging_Control() {
-		this.list = Remote_Control.getClass("Lists");	// 클래스들을 담은 리스트
+		
 		this.totalCount = list.length;	// 불러온 클래스들을 담은 리스트 길이
 		this.listCount = 5;	// 한 페이지에 보여줄 개수
 		this.totalPage = (int) Math.ceil((double) totalCount / listCount);	// 전체 페이지를 담는 변수

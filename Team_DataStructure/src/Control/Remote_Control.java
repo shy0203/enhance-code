@@ -13,7 +13,7 @@ import Lists.*;
 
 public class Remote_Control extends Control_Structure {
 	// 입력한 실험번호에 맞는 실험 class파일들을 호출하고 실행하는 클래스
-	static int length = 0;	// 입력 가능한 숫자 범위
+	int length = 0;	// 입력 가능한 숫자 범위
 	int research_num = -1;	// 입력받은 실험번호를 담아 리턴할 변수
 	Scanner scanNum;	// 입력받은 실험번호
 	String className;	// 입력받은 실험번호에 맞는 클래스명
@@ -26,7 +26,7 @@ public class Remote_Control extends Control_Structure {
 	Paging_Control pageClass = Paging_Control.getInstance();
 	
 	public Remote_Control() {
-		classes = Remote_Control.getClass("Lists");	// 번호를 지정하기 위해 getClass()를 실행하여 클래스들을 미리 담음
+		classes = getClass("Lists");	// 번호를 지정하기 위해 getClass()를 실행하여 클래스들을 미리 담음
 		this.paging();
 		this.dataSize();
 		this.insertNum();
@@ -35,7 +35,7 @@ public class Remote_Control extends Control_Structure {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	protected static Class[] getClass(String packageName) {
+	protected Class[] getClass(String packageName) {
 		// 실험하고자 하는 패키지 내 클래스들을 모두 호출하여 copylists에 담아 리턴
 		List<Class<?>> copylists = new ArrayList<Class<?>>();	// 패키지 내 클래스들을 담을 변수
 		
@@ -68,8 +68,8 @@ public class Remote_Control extends Control_Structure {
 						e.printStackTrace();
 					}
 				}
-				length = copylists.size();	// 입력 가능한 숫자범위 지정을 위해 copylists의 크기를 담음
 			}
+			length = copylists.size();	// 입력 가능한 숫자범위 지정을 위해 copylists의 크기를 담음
 		}
 		return copylists.toArray(new Class[length]);	// copylists 리턴
 	}

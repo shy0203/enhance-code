@@ -14,7 +14,7 @@ public class CopyList06<E> extends AbstractSequentialList<E>
 	private int std;
 
 	// 리스트의 제한성을 통일 시키기 위해 static
-	private static int limit = -1;
+	private int limit = -1;
 
 	// Change-DH
 	class StdNode<E> {
