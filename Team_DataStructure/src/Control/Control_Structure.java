@@ -9,5 +9,5 @@ public abstract class Control_Structure {
 	public abstract void experiment_select();	// 실험번호를 받아 그에 해당하는 클래스를 실험하는 동작
 	public abstract void dataSize();	// 실험 데이터의 범위를 설정할 수 있는 동작
 	protected abstract void getManual(int listCount, int startList);	// 메뉴얼 출력 동작
-	protected abstract void paging();	// 메뉴얼 출력을 페이징 처리하는 동작
+	public abstract void paging();	// 메뉴얼 출력을 페이징 처리하는 동작
 }

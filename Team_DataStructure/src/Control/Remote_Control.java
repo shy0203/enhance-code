@@ -190,7 +190,7 @@ public class Remote_Control extends Control_Structure {
 	}
 	
 	@Override
-	protected void paging() {
+	public void paging() {
 		// 메뉴얼 출력을 페이징 처리하는 동작
 		int listCount; // 한 페이지에 몇개를 읽을지
 		int startList; // 각 페이지 시작 번호

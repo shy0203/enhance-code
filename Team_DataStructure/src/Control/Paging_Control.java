@@ -12,17 +12,13 @@ public class Paging_Control {
 	private int changeListCount;
 	private int currentPage;
 	private int startList;
-	private String className;
-	
-	Scanner scan;
-	String inputChar;
 	
 	private Paging_Control() {
-		this.list = Remote_Control.getClass("Lists");
-		this.totalCount = list.length;
-		this.listCount = 5;
-		this.totalPage = (int) Math.ceil((double) totalCount / listCount);
-		this.currentPage = 1;
+		this.list = Remote_Control.getClass("Lists");	// 클래스들을 담은 리스트
+		this.totalCount = list.length;	// 불러온 클래스들을 담은 리스트 길이
+		this.listCount = 5;	// 한 페이지에 보여줄 개수
+		this.totalPage = (int) Math.ceil((double) totalCount / listCount);	// 전체 페이지를 담는 변수
+		this.currentPage = 1;	// 현재 페이지를 담는 변수
 	}
 	
 	public static Paging_Control getInstance(){	// LazyHolder 싱글톤 생성
@@ -41,7 +37,7 @@ public class Paging_Control {
 		return totalPage;
 	}
 
-	public int getListCount() {
+	public int getListCount() {	// 보여지는 개수에 따른 페이지 인덱스를 변경하기 위함
 		if(currentPage == totalPage){
 			this.changeListCount = totalCount % listCount;	// 마지막 페이지 인덱스 변경 5->남은 갯수 만큼
 		} else{
@@ -74,7 +70,7 @@ public class Paging_Control {
 	}
 	
 	public void pageCheck() {
-		
+		// 페이지 다음/이전 표시
 		if (1 == this.getCurrentPage()) {
 			System.out.print("\t\t\t\t\t[n]: next (종료 필요시 q 입력)...");
 		} 
@@ -86,27 +82,28 @@ public class Paging_Control {
 		}
 	}
 	
+	@SuppressWarnings("resource")
 	public boolean inputChar(boolean commandCheck) {
-
-		scan = new Scanner(System.in);
-		inputChar = scan.nextLine();
+		// 입력 받은 명령어에 대한 구별 동작
+		Scanner scan = new Scanner(System.in);
+		String inputChar = scan.nextLine();
 		
-		// 스캐너를 통해 입력 받은 명령어 구별
+		// 입력 받은 명령어 구별
 		if(inputChar.matches("n")){
-			this.incrementCurrentPage();
+			this.incrementCurrentPage();	// 페이지 증가
 		} 
 		else if(inputChar.matches("p")){
-			this.decrementCurrentPage();
+			this.decrementCurrentPage();	// 페이지 감소
 		}
 		else if(inputChar.matches("q")){
-			commandCheck = true;
+			commandCheck = true;			// 종료
 		}
 		System.out.println("-----------------------------------------------------------------");
 		return commandCheck;
 	}
 	
 	@SuppressWarnings("static-method")
-	public void clear() {
+	public void clear() {	// 콘솔창 클리어
 		for (int i = 0; i < 80; ++i)
 			System.out.println();
 	}
