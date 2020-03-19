@@ -10,8 +10,10 @@ import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import java.util.Queue;
 
+import Data.Data_Lists;
+
 public class CopyList08<E> extends AbstractSequentialList<E> implements
-		List<E>, Deque<E>, Cloneable, java.io.Serializable {
+		List<E>, Deque<E>, Cloneable, java.io.Serializable, Data_Lists {
 	// 첫번째 노드를 가리키는 필드
 	public transient Node<E> head;
 	public transient Node<E> tail;
@@ -1084,5 +1086,20 @@ public class CopyList08<E> extends AbstractSequentialList<E> implements
 		// Read in all elements in the proper order.
 		for (int i = 0; i < size; i++)
 			addBefore((E) s.readObject(), header);
+	}
+	
+	@Override
+	public int getType() {
+		return 8;
+	}
+
+	@Override
+	public void printManual() {
+		System.out.println(" : DoublyLinkedList");
+	}
+
+	@Override
+	public void addSetting() {
+		// TODO Auto-generated method stub
 	}
 }

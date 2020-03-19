@@ -2,9 +2,11 @@ package Lists;
 
 import java.util.*;
 
+import Data.Data_Lists;
+
 public class CopyList05<E> 
 	extends AbstractSequentialList<E> 
-	implements List<E>, Deque<E>, Cloneable, java.io.Serializable {
+	implements List<E>, Deque<E>, Cloneable, java.io.Serializable, Data_Lists {
 	
 	private transient Node<E> header = new Node<E>(null, null, null);
 	private transient int size = 0;
@@ -569,5 +571,20 @@ public class CopyList05<E>
 		// Read in all elements in the proper order.
 		for (int i = 0; i < size; i++)
 			addBefore((E) s.readObject(), header);
+	}
+	
+	@Override
+	public int getType() {	
+		return 5;
+	}
+
+	@Override
+	public void printManual() {
+		System.out.println(" : 특정 기준을 잡고 탐색하는 구조");
+	}
+
+	@Override
+	public void addSetting() {
+		// TODO Auto-generated method stub
 	}
 }

@@ -10,8 +10,10 @@ import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import java.util.Queue;
 
+import Data.Data_Lists;
+
 public class CopyList09<E> extends AbstractSequentialList<E>
-		implements List<E>, Deque<E>, Cloneable, java.io.Serializable {
+		implements List<E>, Deque<E>, Cloneable, java.io.Serializable, Data_Lists {
 
 	// 첫번째 노드를 가리키는 필드
 	public Node<E> head;
@@ -1142,5 +1144,20 @@ public class CopyList09<E> extends AbstractSequentialList<E>
 	public E removeLast() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	@Override
+	public int getType() {
+		return 9;
+	}
+
+	@Override
+	public void printManual() {
+		System.out.println(" : SinglyCircularLinkedList");
+	}
+
+	@Override
+	public void addSetting() {
+		// TODO Auto-generated method stub	
 	}
 }

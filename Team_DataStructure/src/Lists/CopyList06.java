@@ -2,9 +2,11 @@ package Lists;
 
 import java.util.*;
 
+import Data.Data_Lists;
+
 // 자동으로 기준을 생성하는 리스트
-public class CopyList06<E> extends AbstractSequentialList<E> implements
-		List<E>, Deque<E>, Cloneable, java.io.Serializable {
+public class CopyList06<E> extends AbstractSequentialList<E> 
+	implements List<E>, Deque<E>, Cloneable, java.io.Serializable, Data_Lists {
 
 	private transient Node<E> header = new Node<E>(null, null, null);
 	private transient int size = 0;
@@ -33,21 +35,8 @@ public class CopyList06<E> extends AbstractSequentialList<E> implements
 	public CopyList06() {
 		header.next = header.previous = header;
 		std = 8;
-
-		if (limit == -1) {
-			Scanner scan = new Scanner(System.in);
-
-			System.out
-					.print("---------------------\n1.[제한 X]  2.[제한O]\n---------------------...");
-			limit = scan.nextInt();
-			scan.close();
-		}
-		// Change Sangyun
-		if(limit != 1 && limit != 2){
-			System.out.println("잘못된 입력입니다  >>> 제한 없는 버전 실험 진행");
-			limit = 1;
-		}
 	}
+		
 
 	public CopyList06(int std) {
 		header.next = header.previous = header;
@@ -651,5 +640,37 @@ public class CopyList06<E> extends AbstractSequentialList<E> implements
 		// Read in all elements in the proper order.
 		for (int i = 0; i < size; i++)
 			addBefore((E) s.readObject(), header);
+	}
+
+	@Override
+	public int getType() {
+		return 6;
+	}
+
+	@Override
+	public void printManual() {
+		System.out.println(" : 특정 기준을 자동으로 잡고 탐색하는 구조");
+	}
+	
+	@Override
+	public void addSetting() {
+		// Change Sangyun
+		Scanner scan = new Scanner(System.in);
+
+		System.out.print("---------------------\n1.[제한 X]"
+				+ "  2.[제한O]\n---------------------...");
+					
+		do{
+			while(!scan.hasNextInt()){
+				System.out.print("잘못된 입력입니다. 다시 입력하세요 : ");
+				scan.next();
+			}
+			limit = scan.nextInt();
+						
+			if(limit != 1 && limit != 2){
+				System.out.println("잘못된 입력입니다  >>> 제한 없는 버전 실험 진행");
+				limit = 1;
+			}
+		}while(limit == -1);
 	}
 }

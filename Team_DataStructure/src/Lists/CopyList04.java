@@ -2,10 +2,12 @@ package Lists;
 
 import java.util.*;
 
+import Data.Data_Lists;
+
 
 public class CopyList04<E>
     extends AbstractSequentialList<E>
-    implements List<E>, Deque<E>, Cloneable, java.io.Serializable
+    implements List<E>, Deque<E>, Cloneable, java.io.Serializable, Data_Lists
 {
     private transient Entry<E> header = new Entry<E>(null, null, null);
     private transient int size = 0;
@@ -15,34 +17,13 @@ public class CopyList04<E>
     // elementListCapacity : 한 elementList의 최대 공간
     private ArrayList<E> elementList = new ArrayList<E>();
     private int elementListSize = 0;
-    private int elementListCapacity = 10;
+    private static int elementListCapacity = 10;
     private static int limit = 0;
     
     public CopyList04() {
         header.next = header.previous = header;
-        // Change Sangyun
-        if(limit == 0){
-        	Scanner scan = new Scanner(System.in);
-        	System.out.print("---------------------------------\n"
-        			+ "1.[최대10]  2.[최대100]  3.[최대1000]"
-        			+ "\n---------------------------------...");
-        	limit = scan.nextInt();
-        	
-        	if(limit == 1){
-        		elementListCapacity = 10;
-        	}
-        	else if(limit == 2){
-        		elementListCapacity = 100;
-        	}
-        	else if(limit == 3){
-        		elementListCapacity = 1000;
-        	}
-        	else{
-        		System.out.println("잘못된 입력입니다  >>> 초기값 10 실험 진행");
-        	}
-        }
     }
-
+    
 	public CopyList04(int elementListCapacity) {
         header.next = header.previous = header;
         this.elementListCapacity = elementListCapacity;
@@ -731,4 +712,46 @@ public class CopyList04<E>
 	}
 			
     }
+
+	@Override
+	public int getType() {
+		return 4;
+	}
+
+	@Override
+	public void printManual() {
+		System.out.println(" : Entry의 element를 ArrayList로 변경, ArrayList 객체 생성");
+	}
+	
+	@Override
+	public void addSetting(){
+		// Change Sangyun
+		Scanner scan = new Scanner(System.in);
+
+		System.out.print("----------------------------------\n1.[최대 10]"
+				+ "  2.[최대 100]  3.[최대1000]\n----------------------------------...");
+					
+		do{
+			while(!scan.hasNextInt()){
+				System.out.print("잘못된 입력입니다. 다시 입력하세요 : ");
+				scan.next();
+			}
+			limit = scan.nextInt();
+			
+			if(limit == 1){
+				elementListCapacity = 10;
+			}
+			else if(limit == 2){
+				elementListCapacity = 100;
+			}
+			else if(limit == 3){
+				elementListCapacity = 1000;
+			}
+			else{
+				System.out.println("잘못된 입력입니다 >>> 기본값 10 실험 진행");
+				limit = 1;
+			}
+			
+		}while(limit == 0);
+	}
 }

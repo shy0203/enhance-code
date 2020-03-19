@@ -10,10 +10,11 @@ import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import java.util.Queue;
 
+import Data.Data_Lists;
 import Lists.CopyList10.Node;
 
 public class CopyList07<E> extends AbstractSequentialList<E>
-		implements List<E>, Deque<E>, Cloneable, java.io.Serializable {
+		implements List<E>, Deque<E>, Cloneable, java.io.Serializable, Data_Lists {
 	// 첫번째 노드를 가리키는 필드
 	public transient Node<E> head;
 	public transient Node<E> tail;
@@ -1092,5 +1093,20 @@ public class CopyList07<E> extends AbstractSequentialList<E>
 		// Read in all elements in the proper order.
 		for (int i = 0; i < size; i++)
 			addBefore((E) s.readObject(), header);
+	}
+	
+	@Override
+	public int getType() {
+		return 7;
+	}
+	
+	@Override
+	public void printManual() {
+		System.out.println(" : DoublyCircularLinkedList");
+	}
+
+	@Override
+	public void addSetting() {
+		// TODO Auto-generated method stub
 	}
 }

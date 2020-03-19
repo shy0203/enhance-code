@@ -1,10 +1,12 @@
 package Lists;
 import java.util.*;
 
+import Data.Data_Lists;
+
 
 public class CopyList03<E>
     extends AbstractSequentialList<E>
-    implements List<E>, Deque<E>, Cloneable, java.io.Serializable
+    implements List<E>, Deque<E>, Cloneable, java.io.Serializable, Data_Lists
 {
     private transient Entry<E> header = new Entry<E>(null, null, null);
     private transient int size = 0;
@@ -690,4 +692,19 @@ public class CopyList03<E>
 	}
 			
     }
+    
+    @Override
+	public int getType() {	
+		return 3;
+	}
+	
+	@Override
+	public void printManual() {
+		System.out.println(" : Entry의 element를 ArrayList로 변경, ArrayList 공간 확장");
+	}
+
+	@Override
+	public void addSetting() {
+		// TODO Auto-generated method stub
+	}
 }

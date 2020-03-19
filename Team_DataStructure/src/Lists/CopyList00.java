@@ -2,8 +2,10 @@ package Lists;
 
 import java.util.*;
 
+import Data.Data_Lists;
+
 public class CopyList00<E> extends AbstractSequentialList<E>
-    implements List<E>, Deque<E>, Cloneable, java.io.Serializable {
+    implements List<E>, Deque<E>, Cloneable, java.io.Serializable, Data_Lists{
 	
     private transient Entry<E> header = new Entry<E>(null, null, null);
     private transient int size = 0;
@@ -612,4 +614,20 @@ public class CopyList00<E> extends AbstractSequentialList<E>
 	for (int i=0; i<size; i++)
             addBefore((E)s.readObject(), header);
     }
+
+    @Override
+	public int getType() {
+		return 0;
+	}
+
+    @Override
+	public void printManual() {
+		System.out.println(" : LinkedList.class");
+	}
+
+	@Override
+	public void addSetting() {
+		// TODO Auto-generated method stub
+	}
+
 }

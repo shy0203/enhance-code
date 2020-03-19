@@ -2,8 +2,10 @@ package Lists;
 
 import java.util.*;
 
+import Data.Data_Lists;
+
 public class CopyList02<E> extends AbstractSequentialList<E> implements
-		List<E>, Deque<E>, Cloneable, java.io.Serializable {
+		List<E>, Deque<E>, Cloneable, java.io.Serializable, Data_Lists {
 	private transient Entry<E> header = new Entry<E>(null, null, null);
 	private transient int size = 0;
 	// Change!!
@@ -583,4 +585,20 @@ public class CopyList02<E> extends AbstractSequentialList<E> implements
 			throw new IndexOutOfBoundsException("Index: " + index + ", Size: "
 					+ size);
 	}
+	
+	@Override
+	public int getType() {
+		return 2;
+	}
+	
+	@Override
+	public void printManual() {
+		System.out.println(" : ArrayList 참고 및 배열 추가");
+	}
+
+	@Override
+	public void addSetting() {
+		// TODO Auto-generated method stub	
+	}
+	
 }
