@@ -1,15 +1,6 @@
 package Lists;
 
-import java.util.AbstractSequentialList;
-import java.util.Collection;
-import java.util.ConcurrentModificationException;
-import java.util.Deque;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.NoSuchElementException;
-import java.util.Queue;
-
+import java.util.*;
 import Data.Data_Lists;
 
 public class CopyList08<E> extends AbstractSequentialList<E> implements

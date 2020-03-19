@@ -13,20 +13,21 @@ public class Paging_Control {
 	private int currentPage;
 	private int startList;
 	
-	private Paging_Control() {
-		this.list = Remote_Control.getClass("Lists");	// 클래스들을 담은 리스트
+	public Paging_Control() {
+		Remote_Control rc = new Remote_Control();
+		list = rc.getClass("Lists");
 		this.totalCount = list.length;	// 불러온 클래스들을 담은 리스트 길이
 		this.listCount = 5;	// 한 페이지에 보여줄 개수
 		this.totalPage = (int) Math.ceil((double) totalCount / listCount);	// 전체 페이지를 담는 변수
 		this.currentPage = 1;	// 현재 페이지를 담는 변수
 	}
 	
-	public static Paging_Control getInstance(){	// LazyHolder 싱글톤 생성
-		return LazyHolder.INSTANCE;
-	}
-	
-	private static class LazyHolder {	// LazyHolder  싱글톤을 위한 내부 클래스
-		private static final Paging_Control INSTANCE = new Paging_Control();
+	public Paging_Control(Class[] list, int listCount, int currentPage) {
+		this.list = list;
+		this.totalCount = list.length;	// 불러온 클래스들을 담은 리스트 길이
+		this.listCount = listCount;	// 한 페이지에 보여줄 개수
+		this.totalPage = (int) Math.ceil((double) totalCount / listCount);	// 전체 페이지를 담는 변수
+		this.currentPage = currentPage;	// 현재 페이지를 담는 변수
 	}
 	
 	public int getTotalCount() {

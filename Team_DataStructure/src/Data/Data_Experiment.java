@@ -6,16 +6,11 @@ import Lists.CopyList00;
 
 public class Data_Experiment extends Data_Tool implements Data_Structure {
 	// add(), get(), 기타 동작을 실험하기 위해 필요한 조건 동작들을 추가 (갈비지컬렉터 실행, get()동작에 필요한 데이터가 들어있는 list 생성...)
-	private Data_Experiment() {}	// 생성자 private
-	
-	public static Data_Experiment getInstance(){	// LazyHolder 싱글톤 생성
-		return LazyHolder.INSTANCE;
+
+	public Data_Experiment() {
+		// TODO Auto-generated constructor stub
 	}
-	
-	private static class LazyHolder {	// LazyHolder  싱글톤을 위한 내부 클래스
-		private static final Data_Experiment INSTANCE = new Data_Experiment();
-	}
-	
+
 	@Override
 	public void Analysis_add(List<Integer> list, String name) {
 		// add() 실험

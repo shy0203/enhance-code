@@ -1,41 +1,39 @@
 package Control;
 import java.io.File;
-import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
-
 import Data.Data_Experiment;
 import Data.Data_Lists;
-import Lists.*;
 
 public class Remote_Control extends Control_Structure {
 	// 입력한 실험번호에 맞는 실험 class파일들을 호출하고 실행하는 클래스
-	static int length = 0;	// 입력 가능한 숫자 범위
+	int length = 0;	// 입력 가능한 숫자 범위
 	int research_num = -1;	// 입력받은 실험번호를 담아 리턴할 변수
-	Scanner scanNum;	// 입력받은 실험번호
 	String className;	// 입력받은 실험번호에 맞는 클래스명
 	
 	@SuppressWarnings("rawtypes")
 	Class[] classes;	// getClass()로 인하여 생성된 Lists 패키지 내 클래스들
 	Data_Lists copyList = null;	// 각 클래스들을 Data_Lists 인터페이스로 캐스팅 하기 위한 변수
 	
-	Data_Experiment e = Data_Experiment.getInstance();
-	Paging_Control pageClass = Paging_Control.getInstance();
+	Data_Experiment e;
+	Paging_Control pageClass;
 	
 	public Remote_Control() {
-		classes = Remote_Control.getClass("Lists");	// 번호를 지정하기 위해 getClass()를 실행하여 클래스들을 미리 담음
-		this.paging();
-		this.dataSize();
-		this.insertNum();
-		this.addSettings();
-		this.getClassName();
+		classes = getClass("Lists");	// 번호를 지정하기 위해 getClass()를 실행하여 클래스들을 미리 담음
+		e = new Data_Experiment();
+		pageClass = new Paging_Control(classes, 5, 1);
+		paging();
+		e.size = dataSize();	// 입력된 값을 실험 데이터의 범위로 설정
+		insertNum();
+		addSettings();
+		getClassName();
 	}
 	
+	
 	@SuppressWarnings("rawtypes")
-	protected static Class[] getClass(String packageName) {
+	protected Class[] getClass(String packageName) {
 		// 실험하고자 하는 패키지 내 클래스들을 모두 호출하여 copylists에 담아 리턴
 		List<Class<?>> copylists = new ArrayList<Class<?>>();	// 패키지 내 클래스들을 담을 변수
 		
@@ -68,8 +66,8 @@ public class Remote_Control extends Control_Structure {
 						e.printStackTrace();
 					}
 				}
-				length = copylists.size();	// 입력 가능한 숫자범위 지정을 위해 copylists의 크기를 담음
 			}
+			length = copylists.size();	// 입력 가능한 숫자범위 지정을 위해 copylists의 크기를 담음
 		}
 		return copylists.toArray(new Class[length]);	// copylists 리턴
 	}
@@ -77,7 +75,7 @@ public class Remote_Control extends Control_Structure {
 	@Override
 	protected void insertNum() {
 		// 실험 번호를 입력받고 잘못된 번호 입력시 예외처리
-		scanNum = new Scanner(System.in);
+		Scanner scanNum = new Scanner(System.in);
 		System.out.print("0 ~ " + (length - 1) + " 까지 ");	// 입력 가능 숫자범위 조건 출력
 		System.out.print("실험번호 입력 : ");
 		do{
@@ -108,16 +106,9 @@ public class Remote_Control extends Control_Structure {
 	}
 
 	@Override
-	public int getCaseNum() {
-		// 입력받은 번호에 대한 실험번호 리턴
-		return research_num;
-	}
-
-	@Override
-	public String getClassName() {	
+	public void getClassName() {	
 		// 입력받은 번호에 대한 클래스명 리턴
 		className = classes[research_num].getName().replace("Lists.", "");	// 클래스명을 보기 좋게 변경
-		return className;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -144,11 +135,11 @@ public class Remote_Control extends Control_Structure {
 	}
 
 	@Override
-	public void dataSize(){
+	public int dataSize(){
 		// 실험 데이터의 범위를 설정할 수 있는 동작
 		int dataNum = 0;
 		
-		scanNum = new Scanner(System.in);
+		Scanner scanNum = new Scanner(System.in);
 		System.out.print("실험 데이터의 범위를 입력하세요(기본값 100000) : ");
 		
 		do{
@@ -164,7 +155,7 @@ public class Remote_Control extends Control_Structure {
 			
 		}while(dataNum == 0);
 			
-		e.size = dataNum;	// 입력된 값을 실험 데이터의 범위로 설정
+		return dataNum;	
 	}
 	
 	@Override
