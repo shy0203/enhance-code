@@ -692,11 +692,6 @@ public class CopyList03<E>
 	}
 			
     }
-    
-    @Override
-	public int getType() {	
-		return 3;
-	}
 	
 	@Override
 	public void printManual() {

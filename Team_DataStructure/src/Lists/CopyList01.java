@@ -531,11 +531,6 @@ public class CopyList01<E> extends AbstractSequentialList<E> implements
 			elementData = Arrays.copyOf(elementData, newCapacity);
 		}
 	}
-	
-	@Override
-	public int getType() {
-		return 1;
-	}
 
 	@Override
 	public void printManual() {

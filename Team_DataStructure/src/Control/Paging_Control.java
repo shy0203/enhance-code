@@ -12,21 +12,16 @@ public class Paging_Control {
 	private int changeListCount;
 	private int currentPage;
 	private int startList;
+
+	private Paging_Control() {}
 	
-	private Paging_Control() {
-		
+	@SuppressWarnings("rawtypes")
+	public Paging_Control(Class[] list) {
+		this.list = list;
 		this.totalCount = list.length;	// 불러온 클래스들을 담은 리스트 길이
 		this.listCount = 5;	// 한 페이지에 보여줄 개수
 		this.totalPage = (int) Math.ceil((double) totalCount / listCount);	// 전체 페이지를 담는 변수
 		this.currentPage = 1;	// 현재 페이지를 담는 변수
-	}
-	
-	public static Paging_Control getInstance(){	// LazyHolder 싱글톤 생성
-		return LazyHolder.INSTANCE;
-	}
-	
-	private static class LazyHolder {	// LazyHolder  싱글톤을 위한 내부 클래스
-		private static final Paging_Control INSTANCE = new Paging_Control();
 	}
 	
 	public int getTotalCount() {

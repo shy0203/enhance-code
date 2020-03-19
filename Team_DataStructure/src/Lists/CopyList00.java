@@ -616,11 +616,6 @@ public class CopyList00<E> extends AbstractSequentialList<E>
     }
 
     @Override
-	public int getType() {
-		return 0;
-	}
-
-    @Override
 	public void printManual() {
 		System.out.println(" : LinkedList.class");
 	}

@@ -12,8 +12,6 @@ public class CopyList06<E> extends AbstractSequentialList<E>
 	private transient int size = 0;
 	private ArrayList<StdNode<E>> stdList = new ArrayList<StdNode<E>>();
 	private int std;
-
-	// 리스트의 제한성을 통일 시키기 위해 static
 	private int limit = -1;
 
 	// Change-DH
@@ -640,11 +638,6 @@ public class CopyList06<E> extends AbstractSequentialList<E>
 		// Read in all elements in the proper order.
 		for (int i = 0; i < size; i++)
 			addBefore((E) s.readObject(), header);
-	}
-
-	@Override
-	public int getType() {
-		return 6;
 	}
 
 	@Override

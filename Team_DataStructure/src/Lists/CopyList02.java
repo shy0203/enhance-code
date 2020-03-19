@@ -587,11 +587,6 @@ public class CopyList02<E> extends AbstractSequentialList<E> implements
 	}
 	
 	@Override
-	public int getType() {
-		return 2;
-	}
-	
-	@Override
 	public void printManual() {
 		System.out.println(" : ArrayList 참고 및 배열 추가");
 	}

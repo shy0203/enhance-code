@@ -1,7 +1,5 @@
 package Data;
 
-import java.util.List;
-
 public class Data_Tool {
 	// 실험하는데 필요한 필수적이고 공통적인 변수나 반복되는 메소드를 도구로 묶음
 	public int size = 100000;	// 데이터 크기

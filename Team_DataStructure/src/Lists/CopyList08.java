@@ -1,15 +1,6 @@
 package Lists;
 
-import java.util.AbstractSequentialList;
-import java.util.Collection;
-import java.util.ConcurrentModificationException;
-import java.util.Deque;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.NoSuchElementException;
-import java.util.Queue;
-
+import java.util.*;
 import Data.Data_Lists;
 
 public class CopyList08<E> extends AbstractSequentialList<E> implements
@@ -1086,11 +1077,6 @@ public class CopyList08<E> extends AbstractSequentialList<E> implements
 		// Read in all elements in the proper order.
 		for (int i = 0; i < size; i++)
 			addBefore((E) s.readObject(), header);
-	}
-	
-	@Override
-	public int getType() {
-		return 8;
 	}
 
 	@Override

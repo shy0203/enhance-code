@@ -714,11 +714,6 @@ public class CopyList04<E>
     }
 
 	@Override
-	public int getType() {
-		return 4;
-	}
-
-	@Override
 	public void printManual() {
 		System.out.println(" : Entry의 element를 ArrayList로 변경, ArrayList 객체 생성");
 	}

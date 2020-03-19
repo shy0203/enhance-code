@@ -1,6 +1,4 @@
-﻿import java.util.LinkedList;
-
-import Control.Remote_Control;
+﻿import Control.Remote_Control;
 
 public class Main_Test {
 	

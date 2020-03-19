@@ -572,11 +572,6 @@ public class CopyList05<E>
 		for (int i = 0; i < size; i++)
 			addBefore((E) s.readObject(), header);
 	}
-	
-	@Override
-	public int getType() {	
-		return 5;
-	}
 
 	@Override
 	public void printManual() {
