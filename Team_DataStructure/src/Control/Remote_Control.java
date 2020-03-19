@@ -26,7 +26,6 @@ public class Remote_Control extends Control_Structure {
 		// 필요한 객체 생성
 		e = new Data_Experiment();
 		pageClass = new Paging_Control(classes);
-		
 		// 초기 세팅
 		paging();
 		e.size = dataSize();	// 입력된 값을 실험 데이터의 범위로 설정
