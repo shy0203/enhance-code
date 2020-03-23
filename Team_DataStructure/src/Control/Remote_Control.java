@@ -35,6 +35,7 @@ public class Remote_Control extends Control_Structure {
 	}
 	
 	@SuppressWarnings("rawtypes")
+	@Override
 	protected Class[] getClass(String packageName) {
 		// 실험하고자 하는 패키지 내 클래스들을 모두 호출하여 copylists에 담아 리턴
 		List<Class<?>> copylists = new ArrayList<Class<?>>();	// 패키지 내 클래스들을 담을 변수
@@ -196,17 +197,15 @@ public class Remote_Control extends Control_Structure {
 		boolean commandCheck = false;
 		
 		while (!commandCheck) {
-			// 전체 페이징 설정
-			pageClass.pagingControl();
+			pageClass.pagingControl();	// 전체 페이징 설정
 			// 페이지변수 재설정
 			listCount = pageClass.getListCount();
 			startList = pageClass.getStartList();
-			// getManual() 실행	
-			this.getManual(listCount, startList);
-			// 입력값 검사
-			commandCheck = pageClass.inputChar(commandCheck);
-			// 종료하지 않을 때만 clear
-			if(commandCheck == false){
+			
+			this.getManual(listCount, startList);	// getManual() 실행
+			commandCheck = pageClass.inputChar(commandCheck);	// 입력값 검사
+			
+			if(commandCheck == false){	// 종료하지 않을 때만 clear
 				pageClass.clear();
 			}
 		}
