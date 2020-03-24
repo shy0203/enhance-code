@@ -12,8 +12,6 @@ class Paging_Control {
 	private int changeListCount;
 	private int currentPage;
 	private int startList;
-
-	private Paging_Control() {}
 	
 	@SuppressWarnings("rawtypes")
 	public Paging_Control(Class[] list) {

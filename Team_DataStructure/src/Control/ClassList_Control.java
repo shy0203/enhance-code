@@ -9,12 +9,12 @@ import java.util.List;
 
 class ClassList_Control implements Comparator<Class<?>> {
 
-	private int length = 0;	// 입력 가능한 숫자범위 지정을 위해 copylists의 크기를 담음
+	private static int length = 0;	// 입력 가능한 숫자범위 지정을 위해 copylists의 크기를 담음
 	
 	public ClassList_Control(){}
 	
 	@SuppressWarnings("rawtypes")
-	protected Class[] getClass(String packageName) {
+	public static Class[] getClass(String packageName) {
 		// 실험하고자 하는 패키지 내 클래스들을 모두 호출하여 copylists에 담아 리턴
 		List<Class<?>> copylists = new ArrayList<Class<?>>();	// 패키지 내 클래스들을 담을 변수
 		
@@ -50,15 +50,15 @@ class ClassList_Control implements Comparator<Class<?>> {
 			}
 			length = copylists.size();	// 입력 가능한 숫자범위 지정을 위해 copylists의 크기를 담음
 		}
-		Collections.sort(copylists, this);
+		Collections.sort(copylists, new ClassList_Control());
 		
 		return copylists.toArray(new Class[length]);	// copylists 리턴
 	}
 	
-	public int getLength(){
+	public static int getLength(){
 		return length;
 	}
-
+	
 	@Override
 	public int compare(Class<?> o1, Class<?> o2) {
 		return o1.getName().replace("Lists.", "").compareTo(o2.getName().replace("Lists.", ""));

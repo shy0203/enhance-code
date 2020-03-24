@@ -2,8 +2,6 @@ package Control;
 
 abstract class Control_Structure {
 	// Remote_Control의 동작들을 인터페이스로 묶음
-//	@SuppressWarnings("rawtypes")
-//	protected abstract Class[] getClass(String packageName);	// 실험하고자 하는 패키지 내 클래스들을 모두 호출하여 copylists에 담아 리턴
 	protected abstract void insertNum();	// 실험번호를 입력받는 동작
 	protected abstract void addSettings();	// 각 클래스별 추가적으로 필요한 동작이 있을 때 추가적인 세팅 동작
 	public abstract int getCaseNum();	// 해당 실험번호를 return하는 동작
