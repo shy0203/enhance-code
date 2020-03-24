@@ -48,8 +48,7 @@ class Paging_Control {
 		return startList;
 	}
 
-	protected void pagingControl(){
-		//currentPage = 현재 보고있는 페이지
+	protected void pagingControl(){	//currentPage = 현재 보고있는 페이지
 		if (totalPage < currentPage)	currentPage = totalPage;// 현재 페이지를 마지막 페이지로
 		if (1 > currentPage) currentPage = 1;				// 1페이지에서 이전으로 갈때 인덱스 장애 조치
 	}
@@ -92,6 +91,7 @@ class Paging_Control {
 			commandCheck = true;			// 종료
 		}
 		System.out.println("-----------------------------------------------------------------");
+		
 		return commandCheck;
 	}
 	

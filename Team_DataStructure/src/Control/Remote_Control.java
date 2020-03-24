@@ -21,7 +21,7 @@ public class Remote_Control extends Control_Structure {
 	
 	// 필요한 객체 생성을 위한 변수
 	private Paging_Control pagingC;
-	private Data_Experiment e;
+	private Data_Experiment dataE;
 	
 	public Remote_Control() {
 		// 순서대로 정리된 클래스리스트와 리스트길이를 가져옴
@@ -29,10 +29,11 @@ public class Remote_Control extends Control_Structure {
 		length =  ClassList_Control.getLength();
 		// 페이징과 실험에 필요한 객체 생성
 		pagingC = new Paging_Control(classes);
-		e = new Data_Experiment();
-		// 초기세팅
+		dataE = new Data_Experiment();
+		//선택사항
 		paging();
-		e.setSize(dataSize());	// 입력된 값을 실험 데이터의 범위로 설정
+		dataE.setSize(dataSize());	// 입력된 값을 실험 데이터의 범위로 설정
+		// 초기세팅
 		insertNum();
 		addSettings();
 		getClassName();
@@ -43,6 +44,7 @@ public class Remote_Control extends Control_Structure {
 		// 실험 번호를 입력받고 잘못된 번호 입력시 예외처리
 		scanNum = new Scanner(System.in);
 		boolean isNum = researchNum < 0 || researchNum > (length-1);
+		
 		do{
 			System.out.print("0 ~ " + (length - 1) + " 까지 ");	// 입력 가능 숫자범위 조건 출력
 			System.out.print("실험번호 입력 : ");
@@ -53,10 +55,11 @@ public class Remote_Control extends Control_Structure {
 			}
 			researchNum = scanNum.nextInt();
 			
-			if(isNum){	// 입력 가능 숫자범위 조건 불만족 예외처리
+			if(!isNum){	// 입력 가능 숫자범위 조건 불만족 예외처리
 				System.out.println("없는 실험번호입니다.");
-			}		
-		}while(isNum);
+			}
+			
+		}while(!isNum);
 	}
 	
 	@Override
@@ -72,8 +75,7 @@ public class Remote_Control extends Control_Structure {
 	}
 	
 	@Override
-	public int getCaseNum() {
-		// 실험번호 리턴
+	public int getCaseNum() {	// 실험번호 리턴
 		return researchNum;
 	}
 
@@ -94,12 +96,12 @@ public class Remote_Control extends Control_Structure {
 			// Data_Experiment를 실행하기 위해 캐스팅 후, 인스턴스 생성
 			dataList = (List<Integer>) classes[researchNum].newInstance();
 			// 실험부
-			e.Analysis_add(dataList, className);
-			e.Analysis_get(dataList, className);
+			dataE.Analysis_add(dataList, className);
+			dataE.Analysis_get(dataList, className);
 			// LinkedList(=CopyList00)만 실행가능한 동작 예외처리
 			if(researchNum == 0){
-				e.Analysis_sequentialGet(dataList, className);
-				e.Analysis_rotationGet(dataList, className);
+				dataE.Analysis_sequentialGet(dataList, className);
+				dataE.Analysis_rotationGet(dataList, className);
 			}
 		} 
 		catch (InstantiationException | IllegalAccessException e) {	// newInstance 메소드로 객체 생성하려는 대상이 추상클래스일 때 예외처리
@@ -111,7 +113,7 @@ public class Remote_Control extends Control_Structure {
 	public int dataSize(){
 		// 실험 데이터의 범위를 설정할 수 있는 동작
 		int dataNum = 0;
-		scanNum = new Scanner(System.in); 
+		scanNum = new Scanner(System.in);
 		System.out.print("실험 데이터의 범위를 입력하세요(기본값 100000) : ");
 		
 		do{
@@ -142,7 +144,6 @@ public class Remote_Control extends Control_Structure {
 				
 				System.out.print(" [" + (startList+i) + "] " + classes[(startList+i)].getName().replace("Lists.", ""));
 				((Data_Lists) copyList).printManual();	// 추가적인 설명에 대한 출력
-				
 			} 
 			catch (InstantiationException | IllegalAccessException e1) {	// newInstance 메소드로 객체 생성하려는 대상이 추상클래스일 때 예외처리
 				e1.printStackTrace();										// 접근제한자에 의해 접근할 수 없을 때 예외처리
