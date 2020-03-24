@@ -17,8 +17,8 @@ public class CopyList04<E>
     // elementListCapacity : 한 elementList의 최대 공간
     private ArrayList<E> elementList = new ArrayList<E>();
     private int elementListSize = 0;
-    private int elementListCapacity = 10;
-    private int limit = 0;
+    private static int elementListCapacity = 10;
+    private static int limit = -1;
     
     public CopyList04() {
         header.next = header.previous = header;
@@ -26,7 +26,7 @@ public class CopyList04<E>
     
 	public CopyList04(int elementListCapacity) {
         header.next = header.previous = header;
-        this.elementListCapacity = elementListCapacity;
+        CopyList04.elementListCapacity = elementListCapacity;
     }
 
     public CopyList04(Collection<? extends E> c) {
@@ -747,6 +747,6 @@ public class CopyList04<E>
 				limit = 1;
 			}
 			
-		}while(limit == 0);
+		}while(limit <= 0);
 	}
 }

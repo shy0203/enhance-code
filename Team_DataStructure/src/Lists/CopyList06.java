@@ -12,7 +12,7 @@ public class CopyList06<E> extends AbstractSequentialList<E>
 	private transient int size = 0;
 	private ArrayList<StdNode<E>> stdList = new ArrayList<StdNode<E>>();
 	private int std;
-	private int limit = -1;
+	private static int limit = -1;
 
 	// Change-DH
 	class StdNode<E> {
@@ -664,6 +664,6 @@ public class CopyList06<E> extends AbstractSequentialList<E>
 				System.out.println("잘못된 입력입니다  >>> 제한 없는 버전 실험 진행");
 				limit = 1;
 			}
-		}while(limit == -1);
+		}while(limit <= 0);
 	}
 }
