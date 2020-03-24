@@ -2,7 +2,7 @@ package Control;
 
 import java.util.Scanner;
 
-public class Paging_Control {
+class Paging_Control {
 
 	@SuppressWarnings("rawtypes")
 	private Class[] list;
@@ -50,21 +50,21 @@ public class Paging_Control {
 		return startList;
 	}
 
-	public void pagingControl(){
+	protected void pagingControl(){
 		//currentPage = 현재 보고있는 페이지
 		if (totalPage < currentPage)	currentPage = totalPage;// 현재 페이지를 마지막 페이지로
 		if (1 > currentPage) currentPage = 1;				// 1페이지에서 이전으로 갈때 인덱스 장애 조치
 	}
 
-	public void incrementCurrentPage(){
+	protected void incrementCurrentPage(){
 		this.currentPage++;
 	}
 	
-	public void decrementCurrentPage(){
+	protected void decrementCurrentPage(){
 		this.currentPage--;
 	}
 	
-	public void pageCheck() {
+	protected void pageCheck() {
 		// 페이지 다음/이전 표시
 		if (1 == this.getCurrentPage()) {
 			System.out.print("\t\t\t\t\t[n]: next (종료 필요시 q 입력)...");
@@ -78,7 +78,7 @@ public class Paging_Control {
 	}
 	
 	@SuppressWarnings("resource")
-	public boolean inputChar(boolean commandCheck) {
+	protected boolean inputChar(boolean commandCheck) {
 		// 입력 받은 명령어에 대한 구별 동작
 		Scanner scan = new Scanner(System.in);
 		String inputChar = scan.nextLine();
